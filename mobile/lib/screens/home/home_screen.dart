@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:mobile/routes/application.dart';
 import 'package:mobile/screens/home/profile_screen.dart';
 import 'package:mobile/screens/home/search_screen.dart';
-import 'package:mobile/services/auth_service.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 
@@ -41,7 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           _title,
-          style: TextStyle(color: Theme.of(context).accentColor),
+          style: TextStyle(
+            color: Theme.of(context).accentColor,
+            fontSize: 30,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
