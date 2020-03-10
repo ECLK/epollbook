@@ -11,15 +11,6 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: 60.0,
-            ),
-            CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              radius: 64.0,
-              backgroundImage: NetworkImage(
-                  "https://i0.wp.com/365webresources.com/wp-content/uploads/2016/09/FREE-PROFILE-AVATARS.png?resize=502%2C494&ssl=1"),
-            ),
-            SizedBox(
               height: 20.0,
             ),
             Text(
@@ -44,7 +35,9 @@ class ProfileScreen extends StatelessWidget {
                 _signOut(context);
               },
             ),
-            SizedBox(height: 60.0,)
+            SizedBox(
+              height: 60.0,
+            )
           ],
         ),
       ),
@@ -54,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
   void _signOut(BuildContext context) {
     AuthService().signOut().then((_) {
       if (_)
-        Application.router.navigateTo(context, '/auth', replace: true);
+        Application.router.navigateTo(context, '/', clearStack: true);
       else {
         // Handle sign out failure
       }

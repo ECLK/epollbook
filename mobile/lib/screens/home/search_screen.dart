@@ -1,3 +1,4 @@
+import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -10,6 +11,73 @@ class _SearchScreenState extends State<SearchScreen> {
   final List data = [];
 
   List voters;
+
+  @override
+  void initState() {
+    voters = data;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(18.0),
+      child: Column(
+        children: <Widget>[
+          AwesomeButton(
+            blurRadius: 10.0,
+            splashColor: Color.fromRGBO(255, 255, 255, 0.4),
+            borderRadius: BorderRadius.circular(50.0),
+            height: 100.0,
+            width: 100.0,
+            color: Colors.blueAccent,
+            child: Icon(
+              Icons.crop_free,
+              color: Colors.white,
+              size: 40,
+            ),
+            onTap: _scanQR,
+          ),
+          SizedBox(
+            height: 40.0,
+          ),
+          Text("OR"),
+          SizedBox(
+            height: 40.0,
+          ),
+          TextField(
+            decoration: InputDecoration(
+                hintText: "Search by elector id",
+                suffixIcon: Icon(Icons.search)),
+            // TODO: set autofocus
+            // autofocus: true,
+            onChanged: (value) {
+              _onSearch(value);
+            },
+          ),
+          Expanded(child: _buildSearchResults()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchResults() {
+    return ListView(
+      children: voters
+          .map(
+            (voter) => ListTile(
+              title: Text(voter['name']),
+              subtitle: Text(voter['votingNumber']),
+              onTap: () {
+                _handleTap(voter);
+              },
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  void _scanQR() {}
 
   void _onSearch(String value) {
     setState(() {
@@ -82,64 +150,5 @@ class _SearchScreenState extends State<SearchScreen> {
 
   _selectVoter(String index) {
     Logger().i(index);
-  }
-
-  @override
-  void initState() {
-    voters = data;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(suffixIcon: Icon(Icons.search)),
-            // TODO: set autofocus
-            // autofocus: true,
-            onChanged: (value) {
-              _onSearch(value);
-            },
-          ),
-          Expanded(
-            child: ListView(
-              children: voters
-                  .map(
-                    (voter) => ListTile(
-                      title: Text(voter['name']),
-                      subtitle: Text(voter['votingNumber']),
-                      trailing: ClipRRect(
-                        borderRadius: BorderRadius.circular(4.0),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          child: Image.network(
-                            voter['avatarUrl'],
-                            fit: BoxFit.cover,
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                decoration:
-                                    BoxDecoration(color: Colors.blueAccent),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        _handleTap(voter);
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
-          )
-        ],
-      ),
-    );
   }
 }
