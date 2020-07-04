@@ -1,12 +1,12 @@
 Elector[] electors = [];
 
 # Do any database initialization here - runs at program startup time
-function init() {
+function __init() {
     loadElectors();
 }
 
 function loadElectors() {
-    // replace with code to load from DB
+    // TODO: replace with code to load from DB
     electors = [
         {
             revisionYear: "2019",

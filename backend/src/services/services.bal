@@ -15,6 +15,7 @@ service PollBook on hl {
         io:println(string `Returing election data for ${election} for district=${district}, division=${division}, station=${station}`);
         json[] sel = getElectors(election, district, division, station);
         // TODO: making a copy to avoid error ("error: Couldn't complete outbound response")
+        // See: https://github.com/ballerina-platform/ballerina-lang/issues/24584
         json[] res = sel.map(x => x);
         check hc->ok(res);
     }
