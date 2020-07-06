@@ -52,12 +52,64 @@ const string CREATE_VOTER_REGISTRY_TABLE = "CREATE TABLE IF NOT EXISTS voter_reg
     "  CONSTRAINT PollingStationID FOREIGN KEY (PollingStationID) REFERENCES polling_station (PollingStationID)" +
     ")";
 
+const string CREATE_VOTE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS vote_records (" +
+                                            "   ElectorID varchar(10) NOT NULL," +
+                                            "   PollingStationID varchar(10) NOT NULL," +
+                                            "   Status varchar(30) DEFAULT NULL," +
+                                            "   Timestamp timestamp(2) NULL DEFAULT NULL," +
+                                            "   PRIMARY KEY (ElectorID)," +
+                                            "   KEY PollingStationID_idx (PollingStationID)," +
+                                            "   CONSTRAINT ElectorID FOREIGN KEY (`ElectorID`) REFERENCES voter_registry (ElectorID)," +
+                                            "   CONSTRAINT PollingStationID FOREIGN KEY (PollingStationID) REFERENCES polling_station (PollingStationID)" +
+                                            ") ";
+
+const string CREATE_POLLING_STATION_TABLE = "CREATE TABLE IF NOT EXISTS polling_station (" +
+                                              "     PollingStationID varchar(10) NOT NULL," +
+                                              "     PollingDivisionID varchar(10) DEFAULT NULL," +
+                                              "     Name varchar(100) DEFAULT NULL," +
+                                              "     Location varchar(45) DEFAULT NULL," +
+                                              "     PRIMARY KEY (`PollingStationID`)," +
+                                              "     KEY `PollingDivisionID_idx` (`PollingDivisionID`)," +
+                                              "     CONSTRAINT PollingDivisionID FOREIGN KEY (PollingDivisionID) REFERENCES polling_division (PollingDivisionID)" +
+                                            ") ";
+
+const string CREATE_POLLING_DIVISION_TABLE = "CREATE TABLE IF NOT EXISTS `polling_division` (" +
+                                               "    `PollingDivisionID` varchar(10) NOT NULL," +
+                                               "    `ElectoralDistrictID` varchar(10) DEFAULT NULL," +
+                                               "    `Name` varchar(100) DEFAULT NULL," +
+                                               "    PRIMARY KEY (`PollingDivisionID`)," +
+                                               "    KEY `ElectoralDistrictID_idx` (`ElectoralDistrictID`)," +
+                                               "    CONSTRAINT `ElectoralDistrictID` FOREIGN KEY (`ElectoralDistrictID`) REFERENCES `electoral_district` (`ElectoralDistrictID`)" +
+                                            " )";
+
+const string CREATE_ELECTRORAL_DISTRICT_TABLE = "CREATE TABLE IF NOT EXISTS `electoral_district` ( " +
+                                                "   `ElectoralDistrictID` varchar(10) NOT NULL," +
+                                                "   `ProvincialID` varchar(10) DEFAULT NULL," +
+                                                "   `Name` varchar(100) DEFAULT NULL," +
+                                                "   PRIMARY KEY (`ElectoralDistrictID`)," +
+                                                "   KEY `ProvincialID_idx` (`ProvincialID`)," +
+                                                "   CONSTRAINT `ProvincialID` FOREIGN KEY (`ProvincialID`) REFERENCES `province` (`ProvincialID`)" +
+                                                ")";
+
+const string CREATE_PROVINCE_TABLE = "CREATE TABLE IF NOT EXISTS `province` ( " +
+                                     "      `ProvincialID` varchar(10) NOT NULL," +
+                                     "      `Name` varchar(100) DEFAULT NULL," +
+                                     "      PRIMARY KEY (`ProvincialID`)" +
+                                     ") ";
+
 const string INSERT_ELECTOR = "INSERT INTO voter_registry VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 function __init()
 {
     // create tables
     _ = checkpanic dbClient->update(CREATE_VOTER_REGISTRY_TABLE);
+    _ = checkpanic dbClient->update(CREATE_PROVINCE_TABLE);
+    _ = checkpanic dbClient->update(CREATE_ELECTRORAL_DISTRICT_TABLE);
+    _ = checkpanic dbClient->update(CREATE_POLLING_DIVISION_TABLE);
+    _ = checkpanic dbClient->update(CREATE_POLLING_STATION_TABLE);
+    _ = checkpanic dbClient->update(CREATE_VOTE_RECORDS_TABLE);
+
+
 
 }
 
