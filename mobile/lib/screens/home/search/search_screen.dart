@@ -23,10 +23,40 @@ class _SearchScreenState extends State<SearchScreen> {
         fullName: "Alice Fender",
         address: "Colombo 7",
         age: "21",
+        gender: "Female"),
+    Elector(
+        id: "2333221",
+        nic: "988771233v",
+        fullName: "Alice Fender",
+        address: "Colombo 7",
+        age: "21",
+        gender: "Female"),
+    Elector(
+        id: "2333221",
+        nic: "988771233v",
+        fullName: "Alice Fender",
+        address: "Colombo 7",
+        age: "21",
+        gender: "Female"),
+    Elector(
+        id: "2333221",
+        nic: "988771233v",
+        fullName: "Alice Fender",
+        address: "Colombo 7",
+        age: "21",
+        gender: "Female"),
+    Elector(
+        id: "2333221",
+        nic: "988771233v",
+        fullName: "Alice Fender",
+        address: "Colombo 7",
+        age: "21",
         gender: "Female")
   ];
 
   List<Elector> electors;
+
+  final TextEditingController _editingController = TextEditingController();
 
   @override
   void initState() {
@@ -67,6 +97,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 suffixIcon: Icon(Icons.search)),
             // TODO: set autofocus
             // autofocus: true,
+            controller: _editingController,
             onChanged: (value) {
               _onSearch(value);
             },
@@ -262,6 +293,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _updateVoterState(Elector elector, {bool isFine}) {
+    setState(() {
+      _editingController.text = "";
+    });
     Navigator.pop(context);
 
     switch (elector.state) {
