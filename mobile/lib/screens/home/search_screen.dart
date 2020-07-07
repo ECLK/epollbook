@@ -1,6 +1,6 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+import 'package:mobile/models/elector.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -8,13 +8,28 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final List data = [];
+  final List<Elector> data = [
+    Elector(
+        id: "2332123",
+        nic: "961881579v",
+        fullName: "John Doe",
+        address: "Colombo 3",
+        age: "23",
+        gender: "Male"),
+    Elector(
+        id: "2333221",
+        nic: "988771233v",
+        fullName: "Alice Fender",
+        address: "Colombo 7",
+        age: "21",
+        gender: "Female")
+  ];
 
-  List voters;
+  List<Elector> electors;
 
   @override
   void initState() {
-    voters = data;
+    electors = data;
     super.initState();
   }
 
@@ -47,7 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           TextField(
             decoration: InputDecoration(
-                hintText: "Search by elector id",
+                hintText: "Search by Elector ID / NIC",
                 suffixIcon: Icon(Icons.search)),
             // TODO: set autofocus
             // autofocus: true,
@@ -63,13 +78,19 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchResults() {
     return ListView(
-      children: voters
+      children: electors
           .map(
-            (voter) => ListTile(
-              title: Text(voter['name']),
-              subtitle: Text(voter['votingNumber']),
+            (elector) => ListTile(
+              title: Text(elector.id),
+              subtitle: Text(elector.nic),
+              trailing: elector.isVoted
+                  ? Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    )
+                  : null,
               onTap: () {
-                _handleTap(voter);
+                _handleTap(elector);
               },
             ),
           )
@@ -81,14 +102,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _onSearch(String value) {
     setState(() {
-      voters = data
-          .where((voter) =>
-              voter['name'].toLowerCase().contains(value.toLowerCase()))
+      electors = data
+          .where((elector) =>
+              elector.id.toLowerCase().contains(value.toLowerCase()) ||
+              elector.nic.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
 
-  void _handleTap(voter) {
+  void _handleTap(Elector elector) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -96,49 +118,98 @@ class _SearchScreenState extends State<SearchScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4.0),
-                  child: Container(
-                    width: 180,
-                    height: 180,
-                    child: Image.network(
-                      voter['avatarUrl'],
-                      fit: BoxFit.cover,
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          decoration: BoxDecoration(color: Colors.blueAccent),
-                        );
-                      },
-                    ),
+                Text(
+                  "Elector Id",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
                   ),
+                ),
+                Text(
+                  elector.id,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "NIC",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  elector.nic,
+                  style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
                   height: 20.0,
                 ),
-                Center(child: Text(voter['name'])),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Center(
-                  child: Text(
-                    voter['votingNumber'],
-                    style: TextStyle(color: Colors.grey),
+                Text(
+                  "Full Name",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
                   ),
                 ),
+                Text(
+                  elector.fullName,
+                  style: TextStyle(fontSize: 18),
+                ),
                 SizedBox(
-                  height: 120.0,
+                  height: 20.0,
+                ),
+                Text(
+                  "Age",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  elector.age,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  "Gender",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  elector.gender,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  "Address",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  elector.address,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 40.0,
                 ),
                 FlatButton(
                   child: Text(
-                    "Select",
+                    !elector.isVoted ? "Select" : "Already Voted",
                     style: TextStyle(color: Colors.white),
                   ),
-                  color: Colors.blueAccent,
-                  onPressed: () {
-                    _selectVoter(voter['votingNumber']);
-                  },
+                  color: !elector.isVoted ? Colors.blueAccent : Colors.grey,
+                  onPressed: () =>
+                      !elector.isVoted ? _selectVoter(elector) : null,
                 )
               ],
             ),
@@ -148,7 +219,10 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  _selectVoter(String index) {
-    Logger().i(index);
+  _selectVoter(Elector elector) {
+    Navigator.pop(context);
+    setState(() {
+      elector.isVoted = true;
+    });
   }
 }

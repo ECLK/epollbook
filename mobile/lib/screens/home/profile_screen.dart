@@ -6,7 +6,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12.0),
+      margin: EdgeInsets.all(18.0),
       child: Center(
         child: Column(
           children: <Widget>[
