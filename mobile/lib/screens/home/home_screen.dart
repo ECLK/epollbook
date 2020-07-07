@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/screens/home/analytics_screen.dart';
-import 'package:mobile/screens/home/profile_screen.dart';
-import 'package:mobile/screens/home/search_screen.dart';
+import 'package:mobile/screens/home/analytics/analytics_screen.dart';
+import 'package:mobile/screens/home/profile/profile_screen.dart';
+import 'package:mobile/screens/home/search/search_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 

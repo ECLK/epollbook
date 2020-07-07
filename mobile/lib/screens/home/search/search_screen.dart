@@ -1,6 +1,7 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/models/elector.dart';
+import 'package:mobile/styles/color_palette.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -8,7 +9,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final List<Elector> data = [
+  List<Elector> data = [
     Elector(
         id: "2332123",
         nic: "961881579v",
@@ -83,12 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
             (elector) => ListTile(
               title: Text(elector.id),
               subtitle: Text(elector.nic),
-              trailing: elector.isVoted
-                  ? Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    )
-                  : null,
+              trailing: _buildStateTail(elector.state),
               onTap: () {
                 _handleTap(elector);
               },
@@ -202,15 +198,47 @@ class _SearchScreenState extends State<SearchScreen> {
                 SizedBox(
                   height: 40.0,
                 ),
-                FlatButton(
-                  child: Text(
-                    !elector.isVoted ? "Select" : "Already Voted",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  color: !elector.isVoted ? Colors.blueAccent : Colors.grey,
-                  onPressed: () =>
-                      !elector.isVoted ? _selectVoter(elector) : null,
-                )
+                (elector.state == VoteState.PENDING ||
+                        elector.state == VoteState.IN_QUEUE)
+                    ? elector.state == VoteState.PENDING
+                        ? FlatButton(
+                            child: Text(
+                              "Update to In Queue",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            color: Colors.blueAccent,
+                            onPressed: () => _updateVoterState(elector),
+                          )
+                        : Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: FlatButton(
+                                  child: Text(
+                                    "Vote Error",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  color: ColorPalette.error,
+                                  onPressed: () =>
+                                      _updateVoterState(elector, isFine: false),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              Expanded(
+                                child: FlatButton(
+                                  child: Text(
+                                    "Vote Success",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  color: ColorPalette.success,
+                                  onPressed: () =>
+                                      _updateVoterState(elector, isFine: true),
+                                ),
+                              ),
+                            ],
+                          )
+                    : Container()
               ],
             ),
           ),
@@ -219,10 +247,70 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  _selectVoter(Elector elector) {
+  Widget _buildStateTail(VoteState state) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: getStateColor(state),
+      ),
+      child: Text(
+        getStateText(state),
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  void _updateVoterState(Elector elector, {bool isFine}) {
     Navigator.pop(context);
-    setState(() {
-      elector.isVoted = true;
-    });
+
+    switch (elector.state) {
+      case VoteState.PENDING:
+        setState(() {
+          elector.state = VoteState.IN_QUEUE;
+        });
+        break;
+
+      case VoteState.IN_QUEUE:
+        setState(() {
+          elector.state =
+              isFine ? VoteState.VOTE_SUCCESS : VoteState.VOTE_ERROR;
+        });
+        break;
+
+      default:
+    }
+  }
+
+  Color getStateColor(VoteState state) {
+    switch (state) {
+      case VoteState.IN_QUEUE:
+        return ColorPalette.pending;
+
+      case VoteState.VOTE_SUCCESS:
+        return ColorPalette.success;
+
+      case VoteState.VOTE_ERROR:
+        return ColorPalette.error;
+
+      default:
+        return Colors.white;
+    }
+  }
+
+  String getStateText(VoteState state) {
+    switch (state) {
+      case VoteState.IN_QUEUE:
+        return "In Queue";
+
+      case VoteState.VOTE_SUCCESS:
+        return "Success";
+
+      case VoteState.VOTE_ERROR:
+        return "Error";
+
+      default:
+        return "";
+    }
   }
 }
