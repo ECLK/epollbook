@@ -20,3 +20,11 @@ type Elector record{
     string DOB?;
 };
 
+# Format of the polling station CSV files
+type PollingStation record{
+    string PollingStationID;
+    string PollingDivisionID;
+    string Name;
+    string Location;
+};
+
