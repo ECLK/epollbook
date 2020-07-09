@@ -99,6 +99,9 @@ const string CREATE_PROVINCE_TABLE = "CREATE TABLE IF NOT EXISTS `province` ( " 
 
 const string INSERT_ELECTOR = "INSERT INTO voter_registry VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 const string INSERT_POLLING_STATION = "INSERT INTO polling_station VALUES (?, ?, ?, ?)";
+const string INSERT_POLLING_DIVISION = "INSERT INTO polling_division VALUES (?, ?, ?)";
+const string INSERT_ELECTORAL_DISTRICT = "INSERT INTO electoral_district VALUES (?, ?, ?)";
+const string INSERT_PROVINCE = "INSERT INTO province VALUES (?, ?)";
 
 function __init()
 {
@@ -145,4 +148,46 @@ function insertPollingStationToDB(PollingStation row)
     {
         log:printError(io:sprintf("Error in adding polling station ID: %s to the database.",row.PollingStationID));
     }
+}
+
+function insertPollingDivisionToDB(PollingDivision row)
+{
+    var result = dbClient->update(INSERT_POLLING_DIVISION,row.PollingDivisionID,row.ElectoralDistrictID,row.Name);
+
+        if (result is jdbc:UpdateResult)
+        {
+            log:printDebug(io:sprintf("Added polling division ID: %s to the database.",row.PollingDivisionID));
+        }
+        else
+        {
+            log:printError(io:sprintf("Error in adding polling division ID: %s to the database.",row.PollingDivisionID));
+        }
+}
+
+function insertElectoralDistrictToDB(ElectoralDistrict row)
+{
+    var result = dbClient->update(INSERT_ELECTORAL_DISTRICT,row.ElectoralDistrictID,row.ProvincialID,row.Name);
+
+        if (result is jdbc:UpdateResult)
+        {
+            log:printDebug(io:sprintf("Added electoral district ID: %s to the database.",row.ElectoralDistrictID));
+        }
+        else
+        {
+            log:printError(io:sprintf("Error in adding electoral district ID: %s to the database.",row.ElectoralDistrictID));
+        }
+}
+
+function insertProvinceToDB(Province row)
+{
+    var result = dbClient->update(INSERT_PROVINCE,row.ProvincialID,row.Name);
+
+        if (result is jdbc:UpdateResult)
+        {
+            log:printDebug(io:sprintf("Added province ID: %s to the database.",row.ProvincialID));
+        }
+        else
+        {
+            log:printError(io:sprintf("Error in adding province ID: %s to the database.",row.ProvincialID));
+        }
 }

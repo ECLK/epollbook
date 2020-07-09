@@ -5,19 +5,36 @@ import ballerina/time;
 
 
 public function main() returns @tainted error? {
-    string srcFilepath = "src/utilities/resources/";
+    string srcFilePath = "src/utilities/resources/";
 
 
-    string choice = io:readln("1: Add Elector Data\n2: Add Polling Station Data\n\nChoice: ");
+    string choice = io:readln("1: Add Elector Data\n2: Add Polling Station Data\n3: Add Polling Division Data\n4: Add Electoral District Data\n5: Add Province Data\n\nChoice: ");
     string srcFileName = io:readln("File Name: ");
-    srcFilepath = io:sprintf("%s/%s", srcFilepath, srcFileName);
+    srcFilePath = io:sprintf("%s/%s.csv", srcFilePath, srcFileName);
+
     if (choice == "1")
     {
-        handleVoterRegistry(srcFilepath);
+        handleVoterRegistry(srcFilePath);
     }
     else if (choice == "2")
     {
-        handlePollingStations(srcFilepath);
+        handlePollingStations(srcFilePath);
+    }
+    else if (choice == "3")
+    {
+        handlePollingDivision(srcFilePath);
+    }
+    else if (choice == "4")
+    {
+        handleElectoralDistrict(srcFilePath);
+    }
+    else if (choice == "5")
+    {
+        handleProvince(srcFilePath);
+    }
+    else
+    {
+        log:printError("Invalid input!");
     }
 
 
@@ -131,10 +148,10 @@ function calculateDOBFromNIC(string nic, boolean isMale) returns time:Time|error
 
 }
 
-function handleVoterRegistry(string srcFileName)
+function handleVoterRegistry(string srcFilePath)
 {
 
-    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFileName);
+    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFilePath);
     if (rCsvChannel is io:ReadableCSVChannel)
     {
         var tblResult = rCsvChannel.getTable(Elector);
@@ -189,7 +206,7 @@ function handlePollingStations(string srcFilePath)
             table<PollingStation> pollingStationTable = <table<PollingStation>>tblResult;
             foreach var rec in pollingStationTable {
 
-                var t = insertPollingStationToDB(rec);
+                insertPollingStationToDB(rec);
 
             }
         } else
@@ -204,4 +221,86 @@ function handlePollingStations(string srcFilePath)
     }
 
 
+}
+
+
+function handlePollingDivision(string srcFilePath)
+{
+    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFilePath);
+    if (rCsvChannel is io:ReadableCSVChannel)
+    {
+        var tblResult = rCsvChannel.getTable(PollingDivision);
+        if (tblResult is table<record {}>)
+        {
+            table<PollingDivision> pollingStationTable = <table<PollingDivision>>tblResult;
+            foreach var rec in pollingStationTable {
+
+                insertPollingDivisionToDB(rec);
+
+            }
+        } else
+        {
+            log:printError("An error occurred while creating table: ", err = tblResult);
+        }
+        closeReadableCSVChannel(rCsvChannel);
+    }
+    else
+    {
+        log:printError("An error occurred while trying to read the CSV file", err = rCsvChannel);
+    }
+
+
+}
+
+
+function handleElectoralDistrict(string srcFilePath)
+{
+    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFilePath);
+        if (rCsvChannel is io:ReadableCSVChannel)
+        {
+            var tblResult = rCsvChannel.getTable(ElectoralDistrict);
+            if (tblResult is table<record {}>)
+            {
+                table<ElectoralDistrict> pollingStationTable = <table<ElectoralDistrict>>tblResult;
+                foreach var rec in pollingStationTable {
+
+                    insertElectoralDistrictToDB(rec);
+
+                }
+            } else
+            {
+                log:printError("An error occurred while creating table: ", err = tblResult);
+            }
+            closeReadableCSVChannel(rCsvChannel);
+        }
+        else
+        {
+            log:printError("An error occurred while trying to read the CSV file", err = rCsvChannel);
+        }
+}
+
+function handleProvince(string srcFilePath)
+{
+    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFilePath);
+        if (rCsvChannel is io:ReadableCSVChannel)
+        {
+            var tblResult = rCsvChannel.getTable(Province);
+            if (tblResult is table<record {}>)
+            {
+                table<Province> pollingStationTable = <table<Province>>tblResult;
+                foreach var rec in pollingStationTable {
+
+                    insertProvinceToDB(rec);
+
+                }
+            } else
+            {
+                log:printError("An error occurred while creating table: ", err = tblResult);
+            }
+            closeReadableCSVChannel(rCsvChannel);
+        }
+        else
+        {
+            log:printError("An error occurred while trying to read the CSV file", err = rCsvChannel);
+        }
 }
