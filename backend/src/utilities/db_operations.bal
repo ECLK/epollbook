@@ -122,11 +122,11 @@ function insertElectorDataToDB(Elector row)
         row.ElectorID, row.SLIN_NIC, row.Name_SI, row.Name_TA, row.Gender_SI, row.Gender_TA, <string>row?.DOB);
     if(result is jdbc:UpdateResult)
     {
-        log:printDebug(io:sprintf("Added elector: %s",row.ElectorID));
+        log:printDebug(io:sprintf("Added elector ID: %s to the database.",row.ElectorID));
     }
     else
     {
-        log:printError(io:sprintf("Error in adding elector: %s",row.ElectorID),err = result);
+        log:printError(io:sprintf("Error in adding elector ID: %s to the database.",row.ElectorID),err = result);
 
     }
 
