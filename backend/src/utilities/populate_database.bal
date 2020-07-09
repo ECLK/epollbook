@@ -10,14 +10,14 @@ public function main() returns @tainted error? {
 
     string choice = io:readln("1: Add Elector Data\n2: Add Polling Station Data\n\nChoice: ");
     string srcFileName = io:readln("File Name: ");
-    srcFilepath = io:sprintf("%s/%s",srcFilepath,srcFileName);
-    if(choice == "1")
+    srcFilepath = io:sprintf("%s/%s", srcFilepath, srcFileName);
+    if (choice == "1")
     {
         handleVoterRegistry(srcFilepath);
     }
-    else if(choice == "2")
+    else if (choice == "2")
     {
-        io:println("two");
+        handlePollingStations(srcFilepath);
     }
 
 
@@ -134,46 +134,74 @@ function calculateDOBFromNIC(string nic, boolean isMale) returns time:Time|error
 function handleVoterRegistry(string srcFileName)
 {
 
-        io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFileName);
-        if(rCsvChannel is io:ReadableCSVChannel)
+    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFileName);
+    if (rCsvChannel is io:ReadableCSVChannel)
+    {
+        var tblResult = rCsvChannel.getTable(Elector);
+        if (tblResult is table<record {}>)
         {
-            var tblResult = rCsvChannel.getTable(Elector);
-                    if (tblResult is table<record {}>)
-                    {
-                        table<Elector> electorTable = <table<Elector>>tblResult;
-                        foreach var rec in electorTable {
+            table<Elector> electorTable = <table<Elector>>tblResult;
+            foreach var rec in electorTable {
 
-                            boolean isMale = rec.Gender_SI == "පුරුෂ";
+                boolean isMale = rec.Gender_SI == "පුරුෂ";
 
-                            time:Time|error DOB = calculateDOBFromNIC(rec.SLIN_NIC, isMale);
-                            if (DOB is time:Time)
-                            {
-                                rec.DOB = io:sprintf("%s-%s-%s",time:getYear(DOB),time:getMonth(DOB),time:getDay(DOB));
-                                var t = insertElectorDataToDB(rec);
+                time:Time|error DOB = calculateDOBFromNIC(rec.SLIN_NIC, isMale);
+                if (DOB is time:Time)
+                {
+                    rec.DOB = io:sprintf("%s-%s-%s", time:getYear(DOB), time:getMonth(DOB), time:getDay(DOB));
+                    insertElectorDataToDB(rec);
 
-                            }
-                            else
-                            {
-                                // inserting a default date in case of an error in DOB calculation
-                                rec.DOB = "0000-00-00";
-                                insertElectorDataToDB(rec);
-                                log:printError(rec.SLIN_NIC, DOB);
+                }
+                else
+                {
+                    // inserting a default date in case of an error in DOB calculation
+                    rec.DOB = "0000-00-00";
+                    insertElectorDataToDB(rec);
+                    log:printError(rec.SLIN_NIC, DOB);
 
-                            }
+                }
 
 
-                        }
-                    } else
-                    {
-                        log:printError("An error occurred while creating table: ", err = tblResult);
-                    }
-                    closeReadableCSVChannel(rCsvChannel);
-        }
-        else
+            }
+        } else
         {
-            log:printError("An error occurred while trying to read the CSV file", err = rCsvChannel);
+            log:printError("An error occurred while creating table: ", err = tblResult);
         }
+        closeReadableCSVChannel(rCsvChannel);
+    }
+    else
+    {
+        log:printError("An error occurred while trying to read the CSV file", err = rCsvChannel);
+    }
 
+
+
+}
+
+function handlePollingStations(string srcFilePath)
+{
+    io:ReadableCSVChannel|error rCsvChannel = io:openReadableCsvFile(srcFilePath);
+    if (rCsvChannel is io:ReadableCSVChannel)
+    {
+        var tblResult = rCsvChannel.getTable(PollingStation);
+        if (tblResult is table<record {}>)
+        {
+            table<PollingStation> pollingStationTable = <table<PollingStation>>tblResult;
+            foreach var rec in pollingStationTable {
+
+                var t = insertPollingStationToDB(rec);
+
+            }
+        } else
+        {
+            log:printError("An error occurred while creating table: ", err = tblResult);
+        }
+        closeReadableCSVChannel(rCsvChannel);
+    }
+    else
+    {
+        log:printError("An error occurred while trying to read the CSV file", err = rCsvChannel);
+    }
 
 
 }

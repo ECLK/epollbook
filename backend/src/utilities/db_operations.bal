@@ -98,6 +98,7 @@ const string CREATE_PROVINCE_TABLE = "CREATE TABLE IF NOT EXISTS `province` ( " 
                                      ") ";
 
 const string INSERT_ELECTOR = "INSERT INTO voter_registry VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+const string INSERT_POLLING_STATION = "INSERT INTO polling_station VALUES (?, ?, ?, ?)";
 
 function __init()
 {
@@ -129,4 +130,19 @@ function insertElectorDataToDB(Elector row)
 
     }
 
+}
+
+
+function insertPollingStationToDB(PollingStation row)
+{
+    var result = dbClient->update(INSERT_POLLING_STATION,row.PollingStationID,row.PollingDivisionID,row.Name,row.Location);
+
+    if (result is jdbc:UpdateResult)
+    {
+        log:printDebug(io:sprintf("Added polling station ID: %s to the database.",row.PollingStationID));
+    }
+    else
+    {
+        log:printError(io:sprintf("Error in adding polling station ID: %s to the database.",row.PollingStationID));
+    }
 }
