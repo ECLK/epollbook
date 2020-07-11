@@ -145,7 +145,7 @@ function insertPollingStationToDB(PollingStation row)
     }
     else
     {
-        log:printError(io:sprintf("Error in adding polling station ID: %s to the database.",row.PollingStationID));
+        log:printError(io:sprintf("Error in adding polling station ID: %s to the database.",row.PollingStationID),err = result);
     }
 }
 
@@ -159,7 +159,7 @@ function insertPollingDivisionToDB(PollingDivision row)
         }
         else
         {
-            log:printError(io:sprintf("Error in adding polling division ID: %s to the database.",row.PollingDivisionID));
+            log:printError(io:sprintf("Error in adding polling division ID: %s to the database.",row.PollingDivisionID),err = result);
         }
 }
 
@@ -173,7 +173,7 @@ function insertElectoralDistrictToDB(ElectoralDistrict row)
         }
         else
         {
-            log:printError(io:sprintf("Error in adding electoral district ID: %s to the database.",row.ElectoralDistrictID));
+            log:printError(io:sprintf("Error in adding electoral district ID: %s to the database.",row.ElectoralDistrictID),err = result);
         }
 }
 
@@ -187,6 +187,6 @@ function insertProvinceToDB(Province row)
         }
         else
         {
-            log:printError(io:sprintf("Error in adding province ID: %s to the database.",row.ProvincialID));
+            log:printError(io:sprintf("Error in adding province ID: %s to the database.",row.ProvincialID),err = result);
         }
 }
