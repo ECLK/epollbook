@@ -60,7 +60,7 @@ const string CREATE_VOTE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS vote_record
                                             "   PRIMARY KEY (ElectorID)," +
                                             "   KEY PollingStationID_idx (PollingStationID)," +
                                             "   CONSTRAINT ElectorID FOREIGN KEY (`ElectorID`) REFERENCES voter_registry (ElectorID)," +
-                                            "   CONSTRAINT PollingStationID FOREIGN KEY (PollingStationID) REFERENCES polling_station (PollingStationID)" +
+                                            "   FOREIGN KEY (PollingStationID) REFERENCES polling_station (PollingStationID)" +
                                             ") ";
 
 const string CREATE_POLLING_STATION_TABLE = "CREATE TABLE IF NOT EXISTS polling_station (" +
@@ -106,14 +106,12 @@ const string INSERT_PROVINCE = "INSERT INTO province VALUES (?, ?)";
 function __init()
 {
     // create tables
-    _ = checkpanic dbClient->update(CREATE_VOTER_REGISTRY_TABLE);
     _ = checkpanic dbClient->update(CREATE_PROVINCE_TABLE);
     _ = checkpanic dbClient->update(CREATE_ELECTRORAL_DISTRICT_TABLE);
     _ = checkpanic dbClient->update(CREATE_POLLING_DIVISION_TABLE);
     _ = checkpanic dbClient->update(CREATE_POLLING_STATION_TABLE);
+    _ = checkpanic dbClient->update(CREATE_VOTER_REGISTRY_TABLE);
     _ = checkpanic dbClient->update(CREATE_VOTE_RECORDS_TABLE);
-
-
 
 }
 
