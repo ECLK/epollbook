@@ -8,17 +8,17 @@ public function main() returns @tainted error? {
     string srcFilePath = "src/utilities/resources/";
 
 
-    string choice = io:readln("1: Add Elector Data\n2: Add Polling Station Data\n3: Add Polling Division Data\n4: Add Electoral District Data\n5: Add Province Data\n\nChoice: ");
+    string choice = io:readln("1: Add Province Data\n2: Add Electoral District Data\n3: Add Polling Division Data\n4: Add Polling Station Data\n5: Add Elector Data\n\nChoice: ");
     string srcFileName = io:readln("File Name: ");
     srcFilePath = io:sprintf("%s/%s.csv", srcFilePath, srcFileName);
 
     if (choice == "1")
     {
-        handleVoterRegistry(srcFilePath);
+        handleProvince(srcFilePath);
     }
     else if (choice == "2")
     {
-        handlePollingStations(srcFilePath);
+        handleElectoralDistrict(srcFilePath);
     }
     else if (choice == "3")
     {
@@ -26,11 +26,11 @@ public function main() returns @tainted error? {
     }
     else if (choice == "4")
     {
-        handleElectoralDistrict(srcFilePath);
+        handlePollingStations(srcFilePath);
     }
     else if (choice == "5")
     {
-        handleProvince(srcFilePath);
+        handleVoterRegistry(srcFilePath);
     }
     else
     {
