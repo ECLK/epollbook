@@ -4,27 +4,28 @@ import ballerina/log;
 import ballerina/io;
 
 # DB info for testing
-string dbUser = "root";
-string dbPassword = "root";
-string dbName = "epoll_book";
-string dbURL = "jdbc:mysql://localhost:3306/epoll_book";
-
+//string dbUser = "root";
+//string dbPassword = "root";
+//string dbName = "epoll_book";
+//string dbURL = "jdbc:mysql://localhost:3306/epoll_book";
+//
 //jdbc:Client dbClient = new ({
-//    url: config:getAsString("eclk.epb.db.url"),
-//    username: config:getAsString("eclk.epb.db.username"),
-//    password: config:getAsString("eclk.epb.db.password"),
-//    dbOptions: {
-//        useSSL: config:getAsString("eclk.epb.db.useSsl")
-//    }
+//    url: dbURL,
+//    username: dbUser,
+//    password: dbPassword,
+//    dbOptions: {useSSL: false}
+//
 //});
 
 jdbc:Client dbClient = new ({
-    url: dbURL,
-    username: dbUser,
-    password: dbPassword,
-    dbOptions: {useSSL: false}
-
+    url: config:getAsString("eclk.epb.db.url"),
+    username: config:getAsString("eclk.epb.db.username"),
+    password: config:getAsString("eclk.epb.db.password"),
+    dbOptions: {
+        useSSL: config:getAsString("eclk.epb.db.useSsl")
+    }
 });
+
 
 # Queries
 const string CREATE_VOTER_REGISTRY_TABLE = "CREATE TABLE IF NOT EXISTS voter_registry (" +
@@ -60,7 +61,7 @@ const string CREATE_VOTE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS vote_record
                                             "   PRIMARY KEY (ElectorID)," +
                                             "   KEY PollingStationID_idx (PollingStationID)," +
                                             "   CONSTRAINT ElectorID FOREIGN KEY (`ElectorID`) REFERENCES voter_registry (ElectorID)," +
-                                            "   CONSTRAINT PollingStationID FOREIGN KEY (PollingStationID) REFERENCES polling_station (PollingStationID)" +
+                                            "   FOREIGN KEY (PollingStationID) REFERENCES polling_station (PollingStationID)" +
                                             ") ";
 
 const string CREATE_POLLING_STATION_TABLE = "CREATE TABLE IF NOT EXISTS polling_station (" +
@@ -98,18 +99,20 @@ const string CREATE_PROVINCE_TABLE = "CREATE TABLE IF NOT EXISTS `province` ( " 
                                      ") ";
 
 const string INSERT_ELECTOR = "INSERT INTO voter_registry VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+const string INSERT_POLLING_STATION = "INSERT INTO polling_station VALUES (?, ?, ?, ?)";
+const string INSERT_POLLING_DIVISION = "INSERT INTO polling_division VALUES (?, ?, ?)";
+const string INSERT_ELECTORAL_DISTRICT = "INSERT INTO electoral_district VALUES (?, ?, ?)";
+const string INSERT_PROVINCE = "INSERT INTO province VALUES (?, ?)";
 
 function __init()
 {
     // create tables
-    _ = checkpanic dbClient->update(CREATE_VOTER_REGISTRY_TABLE);
     _ = checkpanic dbClient->update(CREATE_PROVINCE_TABLE);
     _ = checkpanic dbClient->update(CREATE_ELECTRORAL_DISTRICT_TABLE);
     _ = checkpanic dbClient->update(CREATE_POLLING_DIVISION_TABLE);
     _ = checkpanic dbClient->update(CREATE_POLLING_STATION_TABLE);
+    _ = checkpanic dbClient->update(CREATE_VOTER_REGISTRY_TABLE);
     _ = checkpanic dbClient->update(CREATE_VOTE_RECORDS_TABLE);
-
-
 
 }
 
@@ -121,12 +124,69 @@ function insertElectorDataToDB(Elector row)
         row.ElectorID, row.SLIN_NIC, row.Name_SI, row.Name_TA, row.Gender_SI, row.Gender_TA, <string>row?.DOB);
     if(result is jdbc:UpdateResult)
     {
-        log:printDebug(io:sprintf("Added elector: %s",row.ElectorID));
+        log:printDebug(io:sprintf("Added elector ID: %s to the database.",row.ElectorID));
     }
     else
     {
-        log:printError(io:sprintf("Error in adding elector: %s",row.ElectorID),err = result);
+        log:printError(io:sprintf("Error in adding elector ID: %s to the database.",row.ElectorID),err = result);
 
     }
 
+}
+
+
+function insertPollingStationToDB(PollingStation row)
+{
+    var result = dbClient->update(INSERT_POLLING_STATION,row.PollingStationID,row.PollingDivisionID,row.Name,row.Location);
+
+    if (result is jdbc:UpdateResult)
+    {
+        log:printDebug(io:sprintf("Added polling station ID: %s to the database.",row.PollingStationID));
+    }
+    else
+    {
+        log:printError(io:sprintf("Error in adding polling station ID: %s to the database.",row.PollingStationID),err = result);
+    }
+}
+
+function insertPollingDivisionToDB(PollingDivision row)
+{
+    var result = dbClient->update(INSERT_POLLING_DIVISION,row.PollingDivisionID,row.ElectoralDistrictID,row.Name);
+
+        if (result is jdbc:UpdateResult)
+        {
+            log:printDebug(io:sprintf("Added polling division ID: %s to the database.",row.PollingDivisionID));
+        }
+        else
+        {
+            log:printError(io:sprintf("Error in adding polling division ID: %s to the database.",row.PollingDivisionID),err = result);
+        }
+}
+
+function insertElectoralDistrictToDB(ElectoralDistrict row)
+{
+    var result = dbClient->update(INSERT_ELECTORAL_DISTRICT,row.ElectoralDistrictID,row.ProvincialID,row.Name);
+
+        if (result is jdbc:UpdateResult)
+        {
+            log:printDebug(io:sprintf("Added electoral district ID: %s to the database.",row.ElectoralDistrictID));
+        }
+        else
+        {
+            log:printError(io:sprintf("Error in adding electoral district ID: %s to the database.",row.ElectoralDistrictID),err = result);
+        }
+}
+
+function insertProvinceToDB(Province row)
+{
+    var result = dbClient->update(INSERT_PROVINCE,row.ProvincialID,row.Name);
+
+        if (result is jdbc:UpdateResult)
+        {
+            log:printDebug(io:sprintf("Added province ID: %s to the database.",row.ProvincialID));
+        }
+        else
+        {
+            log:printError(io:sprintf("Error in adding province ID: %s to the database.",row.ProvincialID),err = result);
+        }
 }
