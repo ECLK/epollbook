@@ -20,8 +20,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  fluro: ^1.5.1
-  shared_preferences: ^0.5.6+1
+  fluro: ^1.6.3
+  shared_preferences: ^0.5.8
   logger: ^0.8.3
   circular_bottom_navigation: ^1.0.1
   awesome_button: ^1.0.2

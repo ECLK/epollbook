@@ -18,12 +18,19 @@ class _ScannerScreenState extends State<ScannerScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-            flex: 5,
+            flex: 2,
             child: QRView(key: qrKey, onQRViewCreated: _onQRViewCreated),
           ),
-          SizedBox(height: 12),
-          Text(qrInput),
-          SizedBox(height: 12),
+          Expanded(
+            flex: 1,
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 12),
+                Text(qrInput),
+                SizedBox(height: 12),
+              ],
+            ),
+          )
           // TODO: Add on pressed call to update voter state
           // FlatButton(child: Text("Okay"))
         ],
