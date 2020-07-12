@@ -1,7 +1,6 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/models/elector.dart';
-import 'package:mobile/routes/application.dart';
 import 'package:mobile/styles/color_palette.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -127,7 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _scanQR() {
-    Application.router.navigateTo(context, '/scanner');
+    // Application.router.navigateTo(context, '/scanner');
   }
 
   void _onSearch(String value) {

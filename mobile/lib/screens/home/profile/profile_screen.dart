@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/routes/application.dart';
 import 'package:mobile/services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -45,12 +44,12 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _signOut(BuildContext context) {
-    AuthService().signOut().then((_) {
-      if (_)
-        Application.router.navigateTo(context, '/', clearStack: true);
-      else {
-        // Handle sign out failure
-      }
-    });
+    // AuthService().signOut().then((_) {
+    //   if (_)
+    //     Application.router.navigateTo(context, '/', clearStack: true);
+    //   else {
+    //     // Handle sign out failure
+    //   }
+    // });
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mobile/routes/application.dart';
 import 'package:mobile/services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -24,11 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        AuthService().isSignedIn().then((_) {
-          (_)
-              ? Application.router.navigateTo(context, '/home', replace: true)
-              : Application.router.navigateTo(context, '/auth', replace: true);
-        });
+        // AuthService().isSignedIn().then((_) {
+        //   (_)
+        //       ? Application.router.navigateTo(context, '/home', replace: true)
+        //       : Application.router.navigateTo(context, '/auth', replace: true);
+        // });
       }
     } on SocketException catch (_) {
       showDialog(
