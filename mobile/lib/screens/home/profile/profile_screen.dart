@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override

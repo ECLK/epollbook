@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/bloc/auth/auth_bloc.dart';
+import 'package:mobile/models/auth_user.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
   _AuthScreenState createState() => _AuthScreenState();
+
+  final String error;
+  AuthScreen({this.error});
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  @override
-  void initState() {
-    _navigateIfAuthed();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +27,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Colors.blueAccent,
-                onPressed: () {
-                  _signIn(context);
-                },
+                onPressed: () => _signIn(context),
               ),
               SizedBox(
                 height: 20,
@@ -47,21 +44,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  void _navigateIfAuthed() {
-    // AuthService().isSignedIn().then((_) {
-    //   (_)
-    //       ? Application.router.navigateTo(context, '/home', replace: true)
-    //       : null;
-    // });
-  }
-
   void _signIn(BuildContext context) {
-    // AuthService().signIn().then((_) {
-    //   if (_)
-    //     Application.router.navigateTo(context, '/home', replace: true);
-    //   else {
-    //     // Handle sign in failure
-    //   }
-    // });
+    BlocProvider.of<AuthBloc>(context).add(SignIn(AuthUser()));
   }
 }
