@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/bloc/auth/auth_bloc.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -29,9 +31,7 @@ class ProfileScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               color: Colors.redAccent,
-              onPressed: () {
-                _signOut(context);
-              },
+              onPressed: () => _signOut(context),
             ),
             SizedBox(
               height: 60.0,
@@ -43,12 +43,6 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _signOut(BuildContext context) {
-    // AuthService().signOut().then((_) {
-    //   if (_)
-    //     Application.router.navigateTo(context, '/', clearStack: true);
-    //   else {
-    //     // Handle sign out failure
-    //   }
-    // });
+    BlocProvider.of<AuthBloc>(context).add(SignOut());
   }
 }
