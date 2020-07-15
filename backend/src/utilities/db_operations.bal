@@ -86,6 +86,13 @@ const string CREATE_PROVINCE_TABLE = "CREATE TABLE IF NOT EXISTS `province` ( " 
                                      "      PRIMARY KEY (`ProvincialID`)" +
                                      ") ";
 
+const string CREATE_QUEUE_DATA_TABLE = "CREATE TABLE IF NOT EXISTS `queue_data` (" +
+                                         "  `ID` int NOT NULL AUTO_INCREMENT," +
+                                         "  `Timestamp` timestamp(2) NOT NULL," +
+                                         "  `Length` int NOT NULL," +
+                                         "  PRIMARY KEY (`ID`)" +
+                                         ")";
+
 const string INSERT_ELECTOR = "INSERT INTO voter_registry VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 const string INSERT_POLLING_STATION = "INSERT INTO polling_station VALUES (?, ?, ?, ?)";
 const string INSERT_POLLING_DIVISION = "INSERT INTO polling_division VALUES (?, ?, ?)";
@@ -101,6 +108,7 @@ function __init()
     _ = checkpanic dbClient->update(CREATE_POLLING_STATION_TABLE);
     _ = checkpanic dbClient->update(CREATE_VOTER_REGISTRY_TABLE);
     _ = checkpanic dbClient->update(CREATE_VOTE_RECORDS_TABLE);
+    _ = checkpanic dbClient->update(CREATE_QUEUE_DATA_TABLE);
 
 }
 
