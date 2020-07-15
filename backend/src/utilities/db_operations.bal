@@ -1,28 +1,15 @@
-//import ballerina/config;
+import ballerina/config;
 import ballerinax/java.jdbc;
 import ballerina/log;
 import ballerina/io;
 
-# DB info for testing
-//string dbUser = "root";
-//string dbPassword = "root";
-//string dbName = "epoll_book";
-//string dbURL = "jdbc:mysql://localhost:3306/epoll_book";
-//
-//jdbc:Client dbClient = new ({
-//    url: dbURL,
-//    username: dbUser,
-//    password: dbPassword,
-//    dbOptions: {useSSL: false}
-//
-//});
-
+// default values are for testing only
 jdbc:Client dbClient = new ({
-    url: config:getAsString("eclk.epb.db.url"),
-    username: config:getAsString("eclk.epb.db.username"),
-    password: config:getAsString("eclk.epb.db.password"),
+    url: config:getAsString("eclk.epb.db.url", "jdbc:mysql://localhost:3306/epoll_book"),
+    username: config:getAsString("eclk.epb.db.username", "root"),
+    password: config:getAsString("eclk.epb.db.password", "root"),
     dbOptions: {
-        useSSL: config:getAsString("eclk.epb.db.useSsl")
+        useSSL: config:getAsString("eclk.epb.db.useSsl", "false")
     }
 });
 
