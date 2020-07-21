@@ -14,7 +14,7 @@ public function main() returns @tainted error? {
     }
 }
 
-function calculateDOBFromNIC(string nic, boolean isMale) returns time:Time|error
+function calculateDOBFromNIC(string nic) returns time:Time|error
 {
     int current_year = 20;
     int length_old_NIC = 10;
@@ -67,8 +67,8 @@ function calculateDOBFromNIC(string nic, boolean isMale) returns time:Time|error
         if (next_three_digits is int)
         {
 
-            // Adding 500 to the next three digits if the person is female
-            if (!isMale)
+            // Subtracting 500 to the next three digits if the person is female
+            if (next_three_digits> 365)
             {
                 next_three_digits -= 500;
             }
@@ -118,9 +118,9 @@ function handleVoterRegistry(string srcFilePath) returns error?
     io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
     table<Elector> electorTable = <table<Elector>>rCsvChannel.getTable(Elector);
     foreach var rec in electorTable {
-        boolean isMale = rec.Gender_SI == "පුරුෂ";
+        //boolean isMale = rec.Gender_SI == "පුරුෂ";
 
-        time:Time|error DOB = calculateDOBFromNIC(rec.SLIN_NIC, isMale);
+        time:Time|error DOB = calculateDOBFromNIC(rec.SLIN_NIC);
         if DOB is time:Time {
             rec.DOB = io:sprintf("%s-%s-%s", time:getYear(DOB), time:getMonth(DOB), time:getDay(DOB));
         } else {
