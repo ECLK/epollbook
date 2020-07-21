@@ -4,14 +4,12 @@ import ballerina/log;
 import ballerina/time;
 
 
-public function main() returns @tainted error? {
-    string choice = io:readln("1: Add Elector Data\n\nChoice: ");
-    string srcFilePath = <@untainted> io:readln("File Name: ");
+public function main(string filePath) returns @tainted error? {
 
-    match choice {
-        "1" => { check handleVoterRegistry(srcFilePath); }
-        _ => { return error("Invalid input!"); }
-    }
+    string srcFilePath = <@untainted> filePath;
+    io:println(srcFilePath);
+    check handleVoterRegistry(srcFilePath);
+
 }
 
 function calculateDOBFromNIC(string nic) returns time:Time|error
