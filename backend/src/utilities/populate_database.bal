@@ -5,15 +5,11 @@ import ballerina/time;
 
 
 public function main() returns @tainted error? {
-    string choice = io:readln("1: Add Province Data\n2: Add Electoral District Data\n3: Add Polling Division Data\n4: Add Polling Station Data\n5: Add Elector Data\n\nChoice: ");
+    string choice = io:readln("1: Add Elector Data\n\nChoice: ");
     string srcFilePath = <@untainted> io:readln("File Name: ");
 
     match choice {
-        "1" => { check handleProvince(srcFilePath); }
-        "2" => { check handleElectoralDistrict(srcFilePath); }
-        "3" => { check handlePollingDivision(srcFilePath); }
-        "4" => { check handlePollingStations(srcFilePath); }
-        "5" => { check handleVoterRegistry(srcFilePath); }
+        "1" => { check handleVoterRegistry(srcFilePath); }
         _ => { return error("Invalid input!"); }
     }
 }
@@ -137,44 +133,3 @@ function handleVoterRegistry(string srcFilePath) returns error?
     check <@untainted> rCsvChannel.close();
 }
 
-function handlePollingStations(string srcFilePath) returns error?
-{
-    io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
-    table<PollingStation> pollingStationTable = <table<PollingStation>>rCsvChannel.getTable(PollingStation);
-    foreach var rec in pollingStationTable {
-        insertPollingStationToDB(rec);
-    }
-    check <@untainted> rCsvChannel.close();
-}
-
-
-function handlePollingDivision(string srcFilePath) returns error?
-{
-    io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
-    table<PollingDivision> pollingStationTable = <table<PollingDivision>>rCsvChannel.getTable(PollingDivision);
-    foreach var rec in pollingStationTable {
-        insertPollingDivisionToDB(rec);
-    }
-    check <@untainted> rCsvChannel.close();
-}
-
-
-function handleElectoralDistrict(string srcFilePath) returns error?
-{
-    io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
-    table<ElectoralDistrict> pollingStationTable = <table<ElectoralDistrict>>rCsvChannel.getTable(ElectoralDistrict);
-    foreach var rec in pollingStationTable {
-        insertElectoralDistrictToDB(rec);
-    }
-    check <@untainted>rCsvChannel.close();
-}
-
-function handleProvince(string srcFilePath) returns error?
-{
-    io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
-    table<Province> pollingStationTable = <table<Province>>rCsvChannel.getTable(Province);
-    foreach var rec in pollingStationTable {
-        insertProvinceToDB(rec);
-    }
-    check <@untainted>rCsvChannel.close();
-}
