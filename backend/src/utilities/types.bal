@@ -20,30 +20,30 @@ type Elector record{
     string DOB?;
 };
 
-# Format of the polling station data CSV files
-type PollingStation record{
-    string PollingStationID;
-    string PollingDivisionID;
-    string Name;
-    string Location;
-};
-
-# Format of the polling division data CSV files
-type PollingDivision record{
-    string PollingDivisionID;
-    string ElectoralDistrictID;
-    string Name;
-};
-
-# Format of the electoral district data CSV files
-type ElectoralDistrict record{
-    string ElectoralDistrictID;
-    string ProvincialID;
-    string Name;
-};
-
-# Format of the province data CSV files
-type Province record{
-    string ProvincialID;
-    string Name;
-};
+//# Format of the polling station data CSV files
+//type PollingStation record{
+//    string PollingStationID;
+//    string PollingDivisionID;
+//    string Name;
+//    string Location;
+//};
+//
+//# Format of the polling division data CSV files
+//type PollingDivision record{
+//    string PollingDivisionID;
+//    string ElectoralDistrictID;
+//    string Name;
+//};
+//
+//# Format of the electoral district data CSV files
+//type ElectoralDistrict record{
+//    string ElectoralDistrictID;
+//    string ProvincialID;
+//    string Name;
+//};
+//
+//# Format of the province data CSV files
+//type Province record{
+//    string ProvincialID;
+//    string Name;
+//};

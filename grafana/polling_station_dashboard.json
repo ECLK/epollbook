@@ -7,14 +7,6 @@
       "type": "datasource",
       "pluginId": "mysql",
       "pluginName": "MySQL"
-    },
-    {
-      "name": "DS_TESTDATA_DB",
-      "label": "TestData DB",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "testdata",
-      "pluginName": "TestData DB"
     }
   ],
   "__requires": [
@@ -50,15 +42,9 @@
     },
     {
       "type": "panel",
-      "id": "table",
-      "name": "Table",
+      "id": "text",
+      "name": "Text",
       "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "testdata",
-      "name": "TestData DB",
-      "version": "1.0.0"
     }
   ],
   "annotations": {
@@ -78,24 +64,11 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1594051834368,
+  "iteration": 1595337466222,
   "links": [],
   "panels": [
     {
-      "collapsed": false,
-      "datasource": "${DS_TESTDATA_DB}",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 26,
-      "panels": [],
-      "title": "Row title",
-      "type": "row"
-    },
-    {
+      "content": "\n<div style=\"text-align:center\"><span style=\"color:#73BF69;font-weight: bold\">${polling_station}</span></div>",
       "datasource": "${DS_MYSQL}",
       "fieldConfig": {
         "defaults": {
@@ -124,18 +97,10 @@
         "h": 2,
         "w": 9,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "id": 12,
-      "options": {
-        "showHeader": false,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Name"
-          }
-        ]
-      },
+      "mode": "html",
       "pluginVersion": "7.0.5",
       "targets": [
         {
@@ -143,7 +108,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT Name\nFroM polling_station\nWhere PollingStationID = $polling_station;\n  \n",
+          "rawSql": "\n  \n",
           "refId": "A",
           "select": [
             [
@@ -168,7 +133,7 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Polling Station",
-      "type": "table"
+      "type": "text"
     },
     {
       "datasource": "${DS_MYSQL}",
@@ -193,7 +158,7 @@
         "h": 2,
         "w": 5,
         "x": 9,
-        "y": 1
+        "y": 0
       },
       "id": 29,
       "options": {
@@ -266,7 +231,7 @@
         "h": 2,
         "w": 5,
         "x": 14,
-        "y": 1
+        "y": 0
       },
       "id": 22,
       "options": {
@@ -338,7 +303,7 @@
         "h": 2,
         "w": 5,
         "x": 19,
-        "y": 1
+        "y": 0
       },
       "id": 23,
       "options": {
@@ -404,20 +369,6 @@
       "type": "stat"
     },
     {
-      "collapsed": false,
-      "datasource": "${DS_TESTDATA_DB}",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 3
-      },
-      "id": 16,
-      "panels": [],
-      "title": "Row title",
-      "type": "row"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -436,7 +387,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 4
+        "y": 2
       },
       "hiddenSeries": false,
       "id": 2,
@@ -591,7 +542,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 4
+        "y": 2
       },
       "hiddenSeries": false,
       "id": 28,
@@ -629,7 +580,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT concat(10*floor(age/10), '-', 10*floor(age/10) + 10) as \"range\",  count(*) as value, current_timestamp AS time\nFROM (\n      SELECT *,timestampdiff(YEAR,DOB,CURDATE()) as age\n      FROM voter_registry\n      WHERE ElectorID in (SELECT ElectorID\n\t\t\t\t\t\t\t\t          FROM vote_records WHERE PollingStationID = $polling_station and Status = \"voted\")) as t \ngroup by `range`\nORDER BY `range` ASC;",
+          "rawSql": "SELECT concat(10*floor(age/10), '-', 10*floor(age/10) + 10) as \"range\",  count(*) as value, current_timestamp AS time\nFROM (\n      SELECT *,timestampdiff(YEAR,DOB,CURDATE()) as age\n      FROM voter_registry\n      WHERE ElectorID in (SELECT ElectorID\n\t\t\t\t\t\t\t\t          FROM vote_records WHERE PollingStationID = $polling_station and Status = \"voted\") AND DOB <> DATE(\"0000-00-00\")) as t\ngroup by `range`\nORDER BY `range` ASC;",
           "refId": "A",
           "select": [
             [
@@ -698,6 +649,132 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_MYSQL}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "hiddenSeries": false,
+      "id": 31,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  Timestamp AS \"time\",\n  Length AS \"Queue Length\"\nFROM queue_data\nWHERE\n  $__timeFilter(Timestamp)\nORDER BY Timestamp",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "Length"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "Queue Length"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "queue_data",
+          "timeColumn": "Timestamp",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Queue Length Over Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:171",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:172",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "datasource": "${DS_MYSQL}",
       "fieldConfig": {
         "defaults": {
@@ -717,10 +794,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 24,
-        "x": 0,
-        "y": 12
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 10
       },
       "id": 7,
       "options": {
@@ -742,7 +819,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT COUNT(*) as \"Male Voters\"\nFROM voter_registry\nWHERE Gender_SI = N'පුරුෂ' and ElectorID in (SELECT ElectorID FROM vote_records WHERE PollingStationID = $polling_station and Status = \"voted\");",
+          "rawSql": "SELECT COUNT(*) as \"Failed Attempts\"\nFROM vote_records\nWHERE Status = \"failed\";",
           "refId": "A",
           "select": [
             [
@@ -763,7 +840,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT COUNT(*) as \"Female Voters\"\nFROM voter_registry\nWHERE Gender_SI = N'ස්ත්‍රී' and ElectorID in (SELECT ElectorID FROM vote_records WHERE PollingStationID = $polling_station and Status = \"voted\");",
+          "rawSql": "SELECT COUNT(*) as \"Male Voters\"\nFROM voter_registry\nWHERE Gender_SI = N'පුරුෂ' and ElectorID in (SELECT ElectorID FROM vote_records WHERE PollingStationID = $polling_station and Status = \"voted\");",
           "refId": "B",
           "select": [
             [
@@ -776,6 +853,34 @@
             ]
           ],
           "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) as \"Female Voters\"\nFROM voter_registry\nWHERE Gender_SI = N'ස්ත්‍රී' and ElectorID in (SELECT ElectorID FROM vote_records WHERE PollingStationID = $polling_station and Status = \"voted\");",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "ID"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "vote_records",
+          "timeColumn": "Timestamp",
+          "timeColumnType": "timestamp",
           "where": [
             {
               "name": "$__timeFilter",
@@ -801,14 +906,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_MYSQL}",
-        "definition": "SELECT PollingStationID FROM polling_station;",
+        "definition": "SELECT DISTINCT(PollingStationID) FROM voter_registry;",
         "hide": 0,
         "includeAll": false,
         "label": "Polling Station",
         "multi": false,
         "name": "polling_station",
         "options": [],
-        "query": "SELECT PollingStationID FROM polling_station;",
+        "query": "SELECT DISTINCT(PollingStationID) FROM voter_registry;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -822,8 +927,8 @@
     ]
   },
   "time": {
-    "from": "2020-07-01T18:30:00.000Z",
-    "to": "2020-07-02T18:29:59.000Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -839,7 +944,7 @@
     ]
   },
   "timezone": "",
-  "title": "E-Poll Book",
+  "title": "Polling Station Dashboard - E Poll Book",
   "uid": "y_Ua1V9Wz",
-  "version": 20
+  "version": 26
 }
