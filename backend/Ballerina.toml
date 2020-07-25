@@ -1,0 +1,15 @@
+[project]
+org-name= "sanjiva"
+version= "0.1.0"
+
+[platform]
+target = "java8"
+
+[[platform.libraries]]
+    artafactId = "mysql-connector-java"
+    version = "5.1.49"
+    path = "lib/mysql-connector-java-5.1.49.jar"
+    groupId = "mysql"
+    modules = ["utilities"]
+
+[dependencies]
