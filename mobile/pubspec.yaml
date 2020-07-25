@@ -20,10 +20,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  fluro: ^1.5.1
-  shared_preferences: ^0.5.6+1
-  logger: ^0.8.3
+  flutter_bloc: ^5.0.1
+  shared_preferences: ^0.5.8
   circular_bottom_navigation: ^1.0.1
+  awesome_button: ^1.0.2
+  charts_flutter: ^0.9.0
+  qr_code_scanner: ^0.0.13
+  dio: ^3.0.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -32,14 +35,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  logger: ^0.8.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -48,13 +50,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/gov.png
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:mobile/routes/application.dart';
-import 'package:mobile/screens/home/profile_screen.dart';
-import 'package:mobile/screens/home/search_screen.dart';
-import 'package:mobile/services/auth_service.dart';
+import 'package:mobile/screens/home/analytics/analytics_screen.dart';
+import 'package:mobile/screens/home/profile/profile_screen.dart';
+import 'package:mobile/screens/home/search/search_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 
@@ -16,17 +14,32 @@ class _HomeScreenState extends State<HomeScreen> {
   String _title;
 
   static List<TabItem> _navItems = List.of([
+    new TabItem(Icons.insert_chart, "", Colors.blueAccent),
     new TabItem(Icons.search, "", Colors.blueAccent),
     new TabItem(Icons.person, "", Colors.blueAccent),
   ]);
 
-  static List<Widget> _screens = [SearchScreen(), ProfileScreen()];
+  static List<Widget> _screens = [
+    AnalyticsScreen.withSampleData(),
+    SearchScreen(),
+    ProfileScreen()
+  ];
 
   CircularBottomNavigationController _navController =
-      new CircularBottomNavigationController(0);
+      new CircularBottomNavigationController(1);
 
   void _setTitle() {
-    _title = (_navController.value.isOdd) ? "Profile" : "Search";
+    switch (_navController.value) {
+      case 0:
+        _title = "Analytics";
+        break;
+      case 1:
+        _title = "Search";
+        break;
+      case 2:
+        _title = "Profile";
+        break;
+    }
   }
 
   @override
@@ -41,7 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           _title,
-          style: TextStyle(color: Theme.of(context).accentColor),
+          style: TextStyle(
+            color: Theme.of(context).accentColor,
+            fontSize: 30,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,

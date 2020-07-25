@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/routes/application.dart';
-import 'package:mobile/services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/bloc/auth/auth_bloc.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 12.0),
+      margin: EdgeInsets.all(18.0),
       child: Center(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 60.0,
-            ),
-            CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              radius: 64.0,
-              backgroundImage: NetworkImage(
-                  "https://i0.wp.com/365webresources.com/wp-content/uploads/2016/09/FREE-PROFILE-AVATARS.png?resize=502%2C494&ssl=1"),
-            ),
             SizedBox(
               height: 20.0,
             ),
@@ -40,11 +31,11 @@ class ProfileScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               color: Colors.redAccent,
-              onPressed: () {
-                _signOut(context);
-              },
+              onPressed: () => _signOut(context),
             ),
-            SizedBox(height: 60.0,)
+            SizedBox(
+              height: 60.0,
+            )
           ],
         ),
       ),
@@ -52,12 +43,6 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _signOut(BuildContext context) {
-    AuthService().signOut().then((_) {
-      if (_)
-        Application.router.navigateTo(context, '/auth', replace: true);
-      else {
-        // Handle sign out failure
-      }
-    });
+    BlocProvider.of<AuthBloc>(context).add(SignOut());
   }
 }
