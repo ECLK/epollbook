@@ -10,6 +10,6 @@ target = "java8"
     version = "5.1.49"
     path = "lib/mysql-connector-java-5.1.49.jar"
     groupId = "mysql"
-    modules = ["utilities"]
+    modules = ["utilities", "services"]
 
 [dependencies]

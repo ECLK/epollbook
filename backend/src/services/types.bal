@@ -1,16 +1,8 @@
-# Information about an elector that we have in the system
 type Elector record {
-    string revisionYear;
-    string district;
-    string division;
-    string station;
-    string name;
-    int id;
-    string slin;
-    string sex;
-};
-
-type Election record {
-    string id;
-    string revisionYear; // revision year for elector list used for this election
+    int ID;
+    string ElectorID;
+    string NIC;
+    string Name_SI;
+    string Name_TA;
+    string Gender_SI;
 };
