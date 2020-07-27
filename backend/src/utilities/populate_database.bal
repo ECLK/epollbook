@@ -1,6 +1,5 @@
 import ballerina/io;
 import ballerina/lang.'int;
-import ballerina/log;
 import ballerina/time;
 
 
@@ -115,17 +114,13 @@ function handleVoterRegistry(string srcFilePath) returns error?
 
     io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
     table<Elector> electorTable = <table<Elector>>rCsvChannel.getTable(Elector);
+    int row = 0;
     foreach var rec in electorTable {
-        //boolean isMale = rec.Gender_SI == "පුරුෂ";
-
-        time:Time|error DOB = calculateDOBFromNIC(rec.SLIN_NIC);
-        if DOB is time:Time {
-            rec.DOB = io:sprintf("%s-%s-%s", time:getYear(DOB), time:getMonth(DOB), time:getDay(DOB));
-        } else {
-            // inserting a default date in case of an error in DOB calculation
-            rec.DOB = "0000-00-00";
-            log:printError(rec.SLIN_NIC, DOB);
+        if row == 0 { // ignore header line
+            row += 1;
+            continue;
         }
+        //boolean isMale = rec.Gender_SI == "පුරුෂ";
         insertElectorDataToDB(rec);
     }
     check <@untainted> rCsvChannel.close();
