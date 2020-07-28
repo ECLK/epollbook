@@ -20,4 +20,4 @@ COPY  --from=build /usr/src/target/bin/services.jar /usr/src/target/services.jar
 WORKDIR /usr/src/target/
 RUN ls -l
 EXPOSE 9090
-CMD java -jar services.jar --eclk.hub.db.url=jdbc:mysql://$DB_URL --eclk.hub.db.username=$DB_UN --eclk.hub.db.password=$DB_PW --eclk.hub.db.useSsl=$DB_USE_SSL --eclk.hub.db.encryptionkey=$DB_ENCRYPTION_KEY
+CMD java -jar services.jar --eclk.epb.db.url=jdbc:mysql://$DB_URL --eclk.epb.db.username=$DB_UN --eclk.epb.db.password=$DB_PW --eclk.epb.db.useSsl=$DB_USE_SSL --eclk.epb.db.encryptionkey=$DB_ENCRYPTION_KEY
