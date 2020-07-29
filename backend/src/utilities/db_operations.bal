@@ -57,7 +57,7 @@ function __init() {
 
 function insertElectorDataToDB(Elector row) {
    // io:println("Inserting ", row.DistrictSI, "/", row.PollingDivisionSI, "/", row.PollingDivisionSI, "/", row.ElectorID, " with Name_SI='", row.Name_SI, "' Name_TA='", row.Name_TA, "'");
-    var result = dbClient->update(INSERT_ELECTOR, row.YearOfRevission, row.DistrictSI, row.DistrictTA, row.PollingDivisionSI,
+    var result = dbClient->update(INSERT_ELECTOR, row.YearOfRevision, row.DistrictSI, row.DistrictTA, row.PollingDivisionSI,
         row.PollingDivisionTA, row.PollingStationID, row.GND_SI, row.GND_TA, row.VS_SI, row.VS_TA, row.HouseNo,
         row.ElectorID, row.SLIN_NIC, row.Name_SI, row.Name_TA, row.Gender_SI, row.Gender_TA);
     if (result is error) {
