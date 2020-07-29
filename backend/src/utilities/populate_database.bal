@@ -30,8 +30,8 @@ function loadData(string srcFilePath) returns error? {
 }
 
 function createData() returns table<Elector> {
-    string[] gender_SI = ["ස්ත්‍රී", "பெண்"];
-    string[] gender_TA = ["ස්ත්‍රී", "ஆண்"];
+    string[] gender_SI = ["පුරුෂ", "ස්ත්‍රී"];
+    string[] gender_TA = ["ஆண்", "பெண்"];
     table<Elector> data = table {
         {YearOfRevision,DistrictSI,DistrictTA,PollingDivisionSI,PollingDivisionTA,PollingStationID,GND_SI,GND_TA,VS_SI,VS_TA,HouseNo,ElectorID,SLIN_NIC,Name_SI,Name_TA,Gender_SI,Gender_TA},
         [
@@ -44,10 +44,12 @@ function createData() returns table<Elector> {
             int nelectors = 1500 + 50 * checkpanic math:randomInRange(1, 10);
             foreach var elector in 1 ... nelectors {
                 int age = checkpanic math:randomInRange(18, 99);
-                int gender = checkpanic math:randomInRange(0,1);
+                int gender = checkpanic math:randomInRange(0,2);
                 int dobdays = checkpanic math:randomInRange(1,365);
-                int seqNo = checkpanic math:randomInRange(1,999);
-                string NIC = string`${age}${gender == 0 ? dobdays : dobdays+500}${seqNo}v`;
+                dobdays = (gender == 0) ? dobdays : dobdays + 500;
+                string dobdays_str = (dobdays < 100) ? io:sprintf("%03d",dobdays) : dobdays.toString();
+                int seqNo = checkpanic math:randomInRange(1000,10000);
+                string NIC = string`${age}${dobdays_str}${seqNo}v`;
                 Elector e = {
                     YearOfRevision: "2019",
                     DistrictSI: "1 - කොළඹ",
