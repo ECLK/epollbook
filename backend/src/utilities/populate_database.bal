@@ -1,14 +1,97 @@
 import ballerina/io;
 import ballerina/lang.'int;
 import ballerina/time;
+import ballerina/math;
 
+public function main(string? filePath = ()) returns @tainted error? {
+    if filePath is () {
+        check generateSQL(createData());
+    } else {
+        io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(<@untainted>filePath);
+        table<Elector> electorTable = <table<Elector>>rCsvChannel.getTable(Elector);
+        check generateSQL(electorTable);
+        check <@untainted> rCsvChannel.close();
+    }
+}
 
-public function main(string filePath) returns @tainted error? {
+function loadData(string srcFilePath) returns error? {
+    io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(<@untainted>srcFilePath);
+    table<Elector> electorTable = <table<Elector>>rCsvChannel.getTable(Elector);
+    int row = 0;
+    foreach var rec in electorTable {
+        if row == 0 { // ignore header line
+            row += 1;
+            continue;
+        }
+        //boolean isMale = rec.Gender_SI == "පුරුෂ";
+        insertElectorDataToDB(rec);
+    }
+    check <@untainted> rCsvChannel.close();
+}
 
-    string srcFilePath = <@untainted> filePath;
-    io:println(srcFilePath);
-    check handleVoterRegistry(srcFilePath);
+function createData() returns table<Elector> {
+    string[] gender_SI = ["ස්ත්‍රී", "பெண்"];
+    string[] gender_TA = ["ස්ත්‍රී", "ஆண்"];
+    table<Elector> data = table {
+        {YearOfRevision,DistrictSI,DistrictTA,PollingDivisionSI,PollingDivisionTA,PollingStationID,GND_SI,GND_TA,VS_SI,VS_TA,HouseNo,ElectorID,SLIN_NIC,Name_SI,Name_TA,Gender_SI,Gender_TA},
+        [
+            {"YearOfRevision","DistrictSI","DistrictTA","PollingDivisionSI","PollingDivisionTA","PollingStationID","GND_SI","GND_TA","VS_SI","VS_TA","HouseNo","ElectorID","NIC","Name_SI","Name_TA","Gender_SI","Gender_TA"}
+        ]
+    };
+    foreach var pd in 0 ... 3 {
+        foreach var psNum in 1 ... 5 {
+            string gnd = string`PD${pd+1}-GND-${math:randomInRange(1,5).toString()}`;
+            int nelectors = 1500 + 50 * checkpanic math:randomInRange(1, 10);
+            foreach var elector in 1 ... nelectors {
+                int age = checkpanic math:randomInRange(18, 99);
+                int gender = checkpanic math:randomInRange(0,1);
+                int dobdays = checkpanic math:randomInRange(1,365);
+                int seqNo = checkpanic math:randomInRange(1,999);
+                string NIC = string`${age}${gender == 0 ? dobdays : dobdays+500}${seqNo}v`;
+                Elector e = {
+                    YearOfRevision: "2019",
+                    DistrictSI: "1 - කොළඹ",
+                    DistrictTA: "1 - கொழும்பு",
+                    PollingDivisionSI: string`PD${pd+1}-SI`,
+                    PollingDivisionTA: string`PD${pd+1}-TA`,
+                    PollingStationID: psNum.toString(),
+                    GND_SI: gnd+"_SI",
+                    GND_TA: gnd+"_TA",
+                    VS_SI: "VS_SI",
+                    VS_TA: "VS_TA",
+                    HouseNo: string`HouseNo ${checkpanic math:randomInRange(100,200)} Foo Street`,
+                    ElectorID: elector.toString(),
+                    SLIN_NIC: NIC,
+                    Name_SI: string`Name-SI-elector#-${elector}`,
+                    Name_TA: string`Name-TA-elector#-${elector}`,
+                    Gender_SI: gender_SI[gender],
+                    Gender_TA: gender_TA[gender]
+                };
+                var v = data.add(e);
+            }
+        }
+    }
+    return data;
+}
 
+function generateSQL(table<Elector> electorTable) returns error? {
+    io:println("DROP TABLE IF EXISTS `voter_registry`;");
+    io:println(CREATE_VOTER_REGISTRY_TABLE + ";");
+    io:println("DROP TABLE IF EXISTS `vote_records`;");
+    io:println(CREATE_VOTE_RECORDS_TABLE + ";");
+    int row = 0;
+    foreach var rec in electorTable {
+        if row == 0 { // ignore header line
+            row += 1;
+            continue;
+        }
+        printInsert(rec);
+    }
+}
+
+function printInsert(Elector rec) {
+    io:println(string`INSERT INTO voter_registry (YearOfRevision,DistrictSI,DistrictTA,PollingDivisionSI,PollingDivisionTA,PollingStationID,GND_SI,GND_TA,VS_SI,VS_TA,HouseNo,ElectorID,NIC,Name_SI,Name_TA,Gender_SI,Gender_TA) 
+      VALUES ('${rec.YearOfRevision}','${rec.DistrictSI}','${rec.DistrictTA}','${rec.PollingDivisionSI}','${rec.PollingDivisionTA}','${rec.PollingStationID}','${rec.GND_SI}','${rec.GND_TA}','${rec.VS_SI}','${rec.VS_TA}','${rec.HouseNo}','${rec.ElectorID}','${rec.SLIN_NIC}','${rec.Name_SI}','${rec.Name_TA}','${rec.Gender_SI}','${rec.Gender_TA}');`);
 }
 
 function calculateDOBFromNIC(string nic) returns time:Time|error
@@ -107,22 +190,5 @@ function calculateDOBFromNIC(string nic) returns time:Time|error
         return error("Invalid NIC format.");
     }
 
-}
-
-function handleVoterRegistry(string srcFilePath) returns error?
-{
-
-    io:ReadableCSVChannel rCsvChannel = check <@untainted>io:openReadableCsvFile(srcFilePath);
-    table<Elector> electorTable = <table<Elector>>rCsvChannel.getTable(Elector);
-    int row = 0;
-    foreach var rec in electorTable {
-        if row == 0 { // ignore header line
-            row += 1;
-            continue;
-        }
-        //boolean isMale = rec.Gender_SI == "පුරුෂ";
-        insertElectorDataToDB(rec);
-    }
-    check <@untainted> rCsvChannel.close();
 }
 

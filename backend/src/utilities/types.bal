@@ -1,5 +1,5 @@
 type Elector record{
-    string YearOfRevission;
+    string YearOfRevision;
     string DistrictSI;
     string DistrictTA;
     string PollingDivisionSI;
