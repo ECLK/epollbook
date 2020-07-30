@@ -6,17 +6,20 @@ import 'package:mobile/styles/color_palette.dart';
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
+
+  final List<Elector> data;
+  List<Elector> electors;
+
+  final List<Elector> inQueueData;
+  List<Elector> inQueue;
+
+  SearchScreen(this.data, this.inQueueData) {
+    electors = data;
+  }
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Elector> electors;
-
   final TextEditingController _editingController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,24 +27,24 @@ class _SearchScreenState extends State<SearchScreen> {
       margin: EdgeInsets.all(18.0),
       child: Column(
         children: <Widget>[
-          AwesomeButton(
-            blurRadius: 10.0,
-            splashColor: Color.fromRGBO(255, 255, 255, 0.4),
-            borderRadius: BorderRadius.circular(50.0),
-            height: 100.0,
-            width: 100.0,
-            color: Colors.blueAccent,
-            child: Icon(
-              Icons.crop_free,
-              color: Colors.white,
-              size: 40,
-            ),
-            onTap: _scanQR,
-          ),
-          SizedBox(
-            height: 40.0,
-          ),
-          Text("OR"),
+          // AwesomeButton(
+          //   blurRadius: 10.0,
+          //   splashColor: Color.fromRGBO(255, 255, 255, 0.4),
+          //   borderRadius: BorderRadius.circular(50.0),
+          //   height: 100.0,
+          //   width: 100.0,
+          //   color: Colors.blueAccent,
+          //   child: Icon(
+          //     Icons.crop_free,
+          //     color: Colors.white,
+          //     size: 40,
+          //   ),
+          //   onTap: _scanQR,
+          // ),
+          // SizedBox(
+          //   height: 40.0,
+          // ),
+          // Text("OR"),
           SizedBox(
             height: 40.0,
           ),
@@ -64,7 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchResults() {
     return ListView(
-      children: electors
+      children: widget.electors
           .map(
             (elector) => ListTile(
               title: Text(elector.id),
@@ -85,11 +88,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _onSearch(String value) {
     setState(() {
-      // electors = data
-      //     .where((elector) =>
-      //         elector.id.toLowerCase().contains(value.toLowerCase()) ||
-      //         elector.nic.toLowerCase().contains(value.toLowerCase()))
-      //     .toList();
+      widget.electors = widget.data
+          .where((elector) =>
+              elector.id.toLowerCase().contains(value.toLowerCase()) ||
+              elector.nic.toLowerCase().contains(value.toLowerCase()))
+          .toList();
     });
   }
 

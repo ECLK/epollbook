@@ -27,7 +27,13 @@ class Repository {
 
   Future<List<Elector>> fetchElectors(
       String election, String district, String division, String station) {
-    return _api.fetcElectors(
+    return _api.fetchElectors(
+        accessToken, election, district, division, station);
+  }
+
+  Future<List<String>> fetchInQueue(
+      String election, String district, String division, String station) {
+    return _api.fetchInQueue(
         accessToken, election, district, division, station);
   }
 

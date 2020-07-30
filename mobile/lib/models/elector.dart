@@ -20,7 +20,7 @@ class Elector {
 
   factory Elector.fromJson(dynamic json) {
     return Elector(
-      id: json['ID'],
+      id: json['ID'].toString(),
       electorId: json['ElectorID'],
       nic: json['NIC'],
       nameSi: json['Name_SI'],

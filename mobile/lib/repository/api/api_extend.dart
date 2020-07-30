@@ -43,7 +43,7 @@ class APIExtend extends API {
   }
 
   @override
-  Future<List<Elector>> fetcElectors(String token, String election,
+  Future<List<Elector>> fetchElectors(String token, String election,
       String district, String division, String station) {
     return _dio
         .get(BASE_URL +
@@ -65,6 +65,32 @@ class APIExtend extends API {
     }).catchError((error) {
       Logger().e(error);
       return List.from([Elector.error()]);
+    });
+  }
+
+  @override
+  Future<List<String>> fetchInQueue(String token, String election,
+      String district, String division, String station) {
+    return _dio
+        .get(BASE_URL +
+            "/show-queue/" +
+            election +
+            "/" +
+            district +
+            "/" +
+            division +
+            "/" +
+            station)
+        .then((response) {
+      List<dynamic> data = response.data as List;
+
+      List<String> _toReturn =
+          data.map((item) => item['ID'].toString()).toList();
+
+      return _toReturn;
+    }).catchError((error) {
+      Logger().e(error);
+      return List.from(["-1"]);
     });
   }
 }
