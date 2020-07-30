@@ -4,6 +4,7 @@ import 'package:mobile/models/user.dart';
 import 'package:mobile/models/info.dart';
 import 'package:mobile/repository/api/api.dart';
 import 'package:mobile/repository/api/api_extend.dart';
+import 'package:mobile/repository/dto/instance_data.dart';
 import 'package:mobile/repository/dto/login_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +28,7 @@ class Repository {
 
   Future<List<Elector>> fetchElectors(
       String election, String district, String division, String station) {
+    _saveInstanceData(election, district, division, station);
     return _api.fetchElectors(
         accessToken, election, district, division, station);
   }
@@ -35,6 +37,34 @@ class Repository {
       String election, String district, String division, String station) {
     return _api.fetchInQueue(
         accessToken, election, district, division, station);
+  }
+
+  void _saveInstanceData(
+      String election, String district, String division, String station) {
+    SharedPreferences.getInstance().then((pref) {
+      pref.setString("election", election);
+      pref.setString("district", district);
+      pref.setString("division", division);
+      pref.setString("station", station);
+    });
+  }
+
+  Future<bool> checkInstanceData() {
+    return SharedPreferences.getInstance().then((pref) {
+      String division = pref.getString("division");
+      String station = pref.getString("station");
+
+      return (division != null && station != null);
+    });
+  }
+
+  Future<InstanceData> loadInstanceData() {
+    return SharedPreferences.getInstance().then((pref) {
+      String division = pref.getString("division");
+      String station = pref.getString("station");
+
+      return InstanceData(division, station);
+    });
   }
 
   // Save token in shared prefs

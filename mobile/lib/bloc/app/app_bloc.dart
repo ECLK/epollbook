@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:mobile/models/elector.dart';
 import 'package:mobile/models/info.dart';
+import 'package:mobile/repository/dto/instance_data.dart';
 import 'package:mobile/repository/repository.dart';
 import 'package:logger/logger.dart';
 
@@ -22,12 +23,43 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     if (event is FetchMeta) {
       yield AppLoading();
 
-      final List<Info> _meta = await _repository.fetchMeta(event.election);
+      bool hasInstanceData = await _repository.checkInstanceData();
 
-      if (_meta != null && _meta.first != null && _meta.first.stationId != "-1")
-        yield AppMetaLoaded(meta: _meta);
-      else
-        yield AppError("Meta loading failed");
+      if (hasInstanceData) {
+        InstanceData instanceData = await _repository.loadInstanceData();
+
+        final List<Elector> _electors = await _repository.fetchElectors(
+            instanceData.election,
+            instanceData.district,
+            instanceData.division,
+            instanceData.station);
+
+        final List<String> _inQueueIDs = await _repository.fetchInQueue(
+            instanceData.election,
+            instanceData.district,
+            instanceData.division,
+            instanceData.station);
+
+        final List<Elector> _inQueue = _electors
+            .where((elector) => _inQueueIDs.contains(elector.id))
+            .toList();
+
+        if (_electors != null &&
+            _electors.first != null &&
+            _electors.first.id != "-1")
+          yield AppElectorsLoaded(all: _electors, inQueue: _inQueue);
+        else
+          yield AppError("Meta loading failed");
+      } else {
+        final List<Info> _meta = await _repository.fetchMeta(event.election);
+
+        if (_meta != null &&
+            _meta.first != null &&
+            _meta.first.stationId != "-1")
+          yield AppMetaLoaded(meta: _meta);
+        else
+          yield AppError("Meta loading failed");
+      }
     } else if (event is FetchElectors) {
       yield AppLoading();
 
@@ -37,8 +69,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final List<String> _inQueueIDs = await _repository.fetchInQueue(
           event.election, event.district, event.division, event.station);
 
-      Logger().i(_inQueueIDs.first);
-
       final List<Elector> _inQueue = _electors
           .where((elector) => _inQueueIDs.contains(elector.id))
           .toList();
@@ -47,6 +77,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           _electors.first != null &&
           _electors.first.id != "-1")
         yield AppElectorsLoaded(all: _electors, inQueue: _inQueue);
+      else
+        yield AppError("Meta loading failed");
+    } else if (event is ChangeSelection) {
+      final List<Info> _meta = await _repository.fetchMeta(event.election);
+
+      if (_meta != null && _meta.first != null && _meta.first.stationId != "-1")
+        yield AppMetaLoaded(meta: _meta);
       else
         yield AppError("Meta loading failed");
     }
