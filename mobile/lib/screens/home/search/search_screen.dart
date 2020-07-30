@@ -9,58 +9,12 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Elector> data = [
-    Elector(
-        id: "2332123",
-        nic: "961881579v",
-        fullName: "John Doe",
-        address: "Colombo 3",
-        age: "23",
-        gender: "Male"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female")
-  ];
-
   List<Elector> electors;
 
   final TextEditingController _editingController = TextEditingController();
 
   @override
   void initState() {
-    electors = data;
     super.initState();
   }
 
@@ -131,11 +85,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _onSearch(String value) {
     setState(() {
-      electors = data
-          .where((elector) =>
-              elector.id.toLowerCase().contains(value.toLowerCase()) ||
-              elector.nic.toLowerCase().contains(value.toLowerCase()))
-          .toList();
+      // electors = data
+      //     .where((elector) =>
+      //         elector.id.toLowerCase().contains(value.toLowerCase()) ||
+      //         elector.nic.toLowerCase().contains(value.toLowerCase()))
+      //     .toList();
     });
   }
 
@@ -183,7 +137,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 Text(
-                  elector.fullName,
+                  elector.id,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
@@ -197,7 +151,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 Text(
-                  elector.age,
+                  elector.id,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
@@ -211,7 +165,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 Text(
-                  elector.gender,
+                  elector.id,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
@@ -225,7 +179,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 Text(
-                  elector.address,
+                  elector.id,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(

@@ -1,8 +1,10 @@
 import 'package:mobile/models/auth_user.dart';
-import 'package:mobile/models/login_response.dart';
+import 'package:mobile/models/elector.dart';
 import 'package:mobile/models/user.dart';
+import 'package:mobile/models/info.dart';
 import 'package:mobile/repository/api/api.dart';
 import 'package:mobile/repository/api/api_extend.dart';
+import 'package:mobile/repository/dto/login_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Repository {
@@ -17,6 +19,16 @@ class Repository {
 
   Future<bool> signOut() {
     return SharedPreferences.getInstance().then((pref) => pref.clear());
+  }
+
+  Future<List<Info>> fetchMeta(String election) {
+    return _api.fetchMeta(accessToken, election);
+  }
+
+  Future<List<Elector>> fetchElectors(
+      String election, String district, String division, String station) {
+    return _api.fetcElectors(
+        accessToken, election, district, division, station);
   }
 
   // Save token in shared prefs
