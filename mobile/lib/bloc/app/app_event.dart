@@ -18,6 +18,12 @@ class FetchElectors extends AppEvent {
   FetchElectors(this.election, this.district, this.division, this.station);
 }
 
+class SelecMethod extends AppEvent {
+  final int option;
+
+  SelecMethod(this.option);
+}
+
 class ChangeSelection extends AppEvent {
   final String election;
 

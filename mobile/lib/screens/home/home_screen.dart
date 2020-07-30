@@ -82,9 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
               return _buildLoadingScreen();
             } else if (state is AppMetaLoaded) {
               return _buildMetaLoadedScreen(context, state.meta);
-            } else if (state is AppElectorsLoaded) {
-              return _buildElectorsLoadedScreen(
+            } else if (state is AppMethodSelect) {
+              return _buildMethodSelectScreen(
                   context, state.all, state.inQueue);
+            } else if (state is AppElectorsLoaded) {
+              return _buildElectorsLoadedScreen(context, state.electors);
             } else if (state is AppError) {
               return _buildErrorScreen(state.error);
             }
@@ -173,10 +175,29 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildElectorsLoadedScreen(
+  _buildMethodSelectScreen(
       BuildContext context, List<Elector> all, List<Elector> inQueue) {
-    return SearchScreen(inQueue, all);
+    return Column(
+      children: <Widget>[
+        FlatButton(
+          child: Text("Pending"),
+          onPressed: () => _handleMethodSelect(context, 0),
+        ),
+        FlatButton(
+          child: Text("Queue"),
+          onPressed: () => _handleMethodSelect(context, 1),
+        )
+      ],
+    );
   }
+
+  void _handleMethodSelect(BuildContext context, int method) {
+    BlocProvider.of<AppBloc>(context).add(SelecMethod(method));
+  }
+
+  SearchScreen _buildElectorsLoadedScreen(
+          BuildContext context, List<Elector> electors) =>
+      SearchScreen(electors);
 
   ErrorScreen _buildErrorScreen(String error) => ErrorScreen(error);
 }

@@ -10,10 +10,7 @@ class SearchScreen extends StatefulWidget {
   final List<Elector> data;
   List<Elector> electors;
 
-  final List<Elector> inQueueData;
-  List<Elector> inQueue;
-
-  SearchScreen(this.data, this.inQueueData) {
+  SearchScreen(this.data) {
     electors = data;
   }
 }
@@ -67,19 +64,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchResults() {
     return ListView(
-      children: widget.electors
-          .map(
-            (elector) => ListTile(
-              title: Text(elector.id),
-              subtitle: Text(elector.nic),
-              trailing: _buildStateTail(elector.state),
-              onTap: () {
-                _handleTap(elector);
-              },
-            ),
-          )
-          .toList(),
-    );
+        children: widget.electors
+            .map(
+              (elector) => ListTile(
+                title: Text(elector.id),
+                subtitle: Text(elector.nic),
+                trailing: _buildStateTail(elector.state),
+                onTap: () {
+                  _handleTap(elector);
+                },
+              ),
+            )
+            .toList());
   }
 
   void _scanQR() {
@@ -105,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  "Elector Id",
+                  "ID",
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
@@ -113,6 +109,20 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 Text(
                   elector.id,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Elector Id",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  elector.electorId,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
@@ -133,56 +143,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 20.0,
                 ),
                 Text(
-                  "Full Name",
+                  "Name",
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
                   ),
                 ),
                 Text(
-                  elector.id,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Age",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  elector.id,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Gender",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  elector.id,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Address",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  elector.id,
+                  elector.nameSi,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(

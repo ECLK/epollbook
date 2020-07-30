@@ -16,6 +16,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   Repository _repository = Repository();
 
+  List<Elector> _electors;
+  List<String> _inQueueIDs;
+  List<Elector> _inQueue;
+
   @override
   Stream<AppState> mapEventToState(
     AppEvent event,
@@ -44,12 +48,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             .where((elector) => _inQueueIDs.contains(elector.id))
             .toList();
 
+        Logger().i(_electors.first);
+
         if (_electors != null &&
             _electors.first != null &&
             _electors.first.id != "-1")
-          yield AppElectorsLoaded(all: _electors, inQueue: _inQueue);
+          yield AppMethodSelect(all: _electors, inQueue: _inQueue);
         else
-          yield AppError("Meta loading failed");
+          yield AppError("Electors loading failed");
       } else {
         final List<Info> _meta = await _repository.fetchMeta(event.election);
 
@@ -63,22 +69,30 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     } else if (event is FetchElectors) {
       yield AppLoading();
 
-      final List<Elector> _electors = await _repository.fetchElectors(
+      _electors = await _repository.fetchElectors(
           event.election, event.district, event.division, event.station);
 
-      final List<String> _inQueueIDs = await _repository.fetchInQueue(
+      _inQueueIDs = await _repository.fetchInQueue(
           event.election, event.district, event.division, event.station);
 
-      final List<Elector> _inQueue = _electors
+      _inQueue = _electors
           .where((elector) => _inQueueIDs.contains(elector.id))
           .toList();
 
       if (_electors != null &&
           _electors.first != null &&
           _electors.first.id != "-1")
-        yield AppElectorsLoaded(all: _electors, inQueue: _inQueue);
+        yield AppMethodSelect(all: _electors, inQueue: _inQueue);
       else
-        yield AppError("Meta loading failed");
+        yield AppError("Electors loading failed");
+    } else if (event is SelecMethod) {
+      Logger().i(_electors.first);
+
+      if (event.option == 0) {
+        yield AppElectorsLoaded(electors: _electors);
+      } else {
+        yield AppElectorsLoaded(electors: _inQueue);
+      }
     } else if (event is ChangeSelection) {
       final List<Info> _meta = await _repository.fetchMeta(event.election);
 
