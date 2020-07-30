@@ -23,14 +23,20 @@ jdbc:Client dbClient = new ({
 function getElectors(string election, string districtSI, string divisionSI, string stationID) returns @tainted json[]|error {
     string SELECT_ELECTORS = "SELECT ID, ElectorID, NIC, Name_SI, Name_TA FROM voter_registry WHERE DistrictSI = ? AND PollingDivisionSI = ? AND PollingStationID = ?";
     table<record{}> ret = check dbClient->select(SELECT_ELECTORS, Elector, districtSI, divisionSI, stationID);
-    return <@untainted> <json[]> jsonutils:fromTable(ret);
+    return <json[]> jsonutils:fromTable(ret);
 }
 
-function setVoterStatus(string election, string stationID, string voterID, string timestamp, string status) returns error? {
-    string ENTER_QUEUE = "REPLACE INTO vote_records(ID,PollingStationID,ElectionID, Timestamp, Status) VALUES (?, ?, ?, ?, ?)";
-    var res = dbClient->update(ENTER_QUEUE, voterID, stationID, election, timestamp, status);
+function setVoterStatus(string election, string districtSI, string divisionSI, string stationID, string voterID, string timestamp, string status) returns error? {
+    string ENTER_QUEUE = "REPLACE INTO vote_records(ID,DistrictSI,PollingDivisionSI,PollingStationID,ElectionID, Timestamp, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    var res = dbClient->update(ENTER_QUEUE, voterID, districtSI, divisionSI, stationID, election, timestamp, status);
     if !(res is jdbc:UpdateResult) {
         log:printError(string`Error recording ${status} status of voter ${voterID} at polling station '${stationID}'`);
         return res;
     }
+}
+
+function getQueue(string election, string districtSI, string divisionSI, string stationID) returns @tainted json[]|error {
+    string SELECT_QUEUE = "SELECT ID FROM vote_records where Status='QUEUED' AND DistrictSI = ? AND PollingDivisionSI = ? AND PollingStationID = ?";
+    table<record{}> ret = check dbClient->select(SELECT_QUEUE, record { string ID; }, districtSI, divisionSI, stationID);
+    return <json[]> jsonutils:fromTable(ret);
 }
