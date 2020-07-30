@@ -50,7 +50,7 @@ function createData() returns table<Elector> {
                 string NIC = string`${age}${gender == 0 ? dobdays : dobdays+500}${seqNo}v`;
                 Elector e = {
                     YearOfRevision: "2019",
-                    DistrictSI: "CMB", //"1 - කොළඹ",
+                    DistrictSI: "1 - කොළඹ",
                     DistrictTA: "1 - கொழும்பு",
                     PollingDivisionSI: string`PD${pd+1}-SI`,
                     PollingDivisionTA: string`PD${pd+1}-TA`,

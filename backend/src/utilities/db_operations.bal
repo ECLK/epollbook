@@ -38,10 +38,13 @@ const string CREATE_VOTER_REGISTRY_TABLE = "CREATE TABLE IF NOT EXISTS voter_reg
 
 const string CREATE_VOTE_RECORDS_TABLE = "CREATE TABLE IF NOT EXISTS vote_records (" +
     "   ID INT NOT NULL," +
-    "   PollingStationID varchar(10) NOT NULL," +
     "   ElectionID varchar(10) NOT NULL," +
+    "   DistrictSI varchar(100) DEFAULT NULL," +
+    "   PollingDivisionSI varchar(25) DEFAULT NULL," +
+    "   PollingStationID varchar(10) NOT NULL," +
     "   Status varchar(30) DEFAULT NULL," +
     "   Timestamp timestamp(2) NULL DEFAULT NULL," +
+    "   Age int DEFAULT -1," +
     "   PRIMARY KEY (ID)," +
     "   KEY PollingStationID_idx (PollingStationID)," +
     "   CONSTRAINT ID FOREIGN KEY (`ID`) REFERENCES voter_registry (ID)" +
