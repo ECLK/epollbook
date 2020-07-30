@@ -73,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
             } else if (state is AppMethodSelect) {
               return _buildMethodSelectScreen(context);
             } else if (state is AppElectorsLoaded) {
-              return _buildElectorsLoadedScreen(context, state.electors);
+              return _buildElectorsLoadedScreen(
+                  context, state.electors, state.isPending);
             } else if (state is AppError) {
               return _buildErrorScreen(state.error);
             }
@@ -190,8 +191,8 @@ void _handleMethodSelect(BuildContext context, int method) {
 }
 
 SearchScreen _buildElectorsLoadedScreen(
-        BuildContext context, List<Elector> electors) =>
-    SearchScreen(context, electors);
+        BuildContext context, List<Elector> electors, bool isPending) =>
+    SearchScreen(context, electors, isPending);
 
 void _handleProceed(
     BuildContext context, String _currentDivision, String _currentStation) {

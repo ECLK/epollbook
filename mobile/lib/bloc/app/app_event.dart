@@ -31,3 +31,21 @@ class ChangeMeta extends AppEvent {
 }
 
 class ChangeMethod extends AppEvent {}
+
+class UpdateToQueued extends AppEvent {
+  final String voterId;
+
+  UpdateToQueued(this.voterId);
+}
+
+class UpdateToVoted extends AppEvent {
+  final String voterId;
+
+  UpdateToVoted(this.voterId);
+}
+
+class Refresh extends AppEvent {
+  final int option;
+
+  Refresh(this.option);
+}

@@ -38,6 +38,18 @@ class Repository {
         accessToken, election, district, division, station);
   }
 
+  Future<bool> updateToQueued(String election, String district, String division,
+      String station, String voterId, DateTime timestamp) {
+    return _api.updateToQueued(
+        accessToken, election, district, division, station, voterId, timestamp);
+  }
+
+  Future<bool> updateToVoted(String election, String district, String division,
+      String station, String voterId, DateTime timestamp) {
+    return _api.updateToVoted(
+        accessToken, election, district, division, station, voterId, timestamp);
+  }
+
   void saveInstanceData(
       String election, String district, String division, String station) {
     SharedPreferences.getInstance().then((pref) {

@@ -46,15 +46,7 @@ class APIExtend extends API {
   Future<List<Elector>> fetchElectors(String token, String election,
       String district, String division, String station) {
     return _dio
-        .get(BASE_URL +
-            "/electors/" +
-            election +
-            "/" +
-            district +
-            "/" +
-            division +
-            "/" +
-            station)
+        .get(BASE_URL + "/electors/$election/$district/$division/$station")
         .then((response) {
       List<dynamic> data = response.data as List;
 
@@ -72,15 +64,7 @@ class APIExtend extends API {
   Future<List<String>> fetchInQueue(String token, String election,
       String district, String division, String station) {
     return _dio
-        .get(BASE_URL +
-            "/show-queue/" +
-            election +
-            "/" +
-            district +
-            "/" +
-            division +
-            "/" +
-            station)
+        .get(BASE_URL + "/show-queue/$election/$district/$division/$station")
         .then((response) {
       List<dynamic> data = response.data as List;
 
@@ -91,6 +75,32 @@ class APIExtend extends API {
     }).catchError((error) {
       Logger().e(error);
       return List.from(["-1"]);
+    });
+  }
+
+  @override
+  Future<bool> updateToQueued(String token, String election, String district,
+      String division, String station, String voterId, DateTime timestamp) {
+    return _dio
+        .post(BASE_URL +
+            "/queued/$election/$district/$division/$station/$voterId/" +
+            "${timestamp.year}-${timestamp.month}-${timestamp.day}%20${timestamp.hour}:${timestamp.minute}:${timestamp.second}")
+        .then((response) => response.statusCode == 202)
+        .catchError((error) {
+      Logger().e(error);
+    });
+  }
+
+  @override
+  Future<bool> updateToVoted(String token, String election, String district,
+      String division, String station, String voterId, DateTime timestamp) {
+    return _dio
+        .post(BASE_URL +
+            "/voted/$election/$district/$division/$station/$voterId/" +
+            "${timestamp.year}-${timestamp.month}-${timestamp.day}%20${timestamp.hour}:${timestamp.minute}:${timestamp.second}")
+        .then((response) => response.statusCode == 202)
+        .catchError((error) {
+      Logger().e(error);
     });
   }
 }

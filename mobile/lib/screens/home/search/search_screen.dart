@@ -11,11 +11,12 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 
   final BuildContext baseContext;
+  final bool isPending;
 
   final List<Elector> data;
   List<Elector> electors;
 
-  SearchScreen(this.baseContext, this.data) {
+  SearchScreen(this.baseContext, this.data, this.isPending) {
     electors = data;
   }
 }
@@ -29,9 +30,18 @@ class _SearchScreenState extends State<SearchScreen> {
       margin: EdgeInsets.all(18.0),
       child: Column(
         children: <Widget>[
-          FlatButton(
-            child: Text("Back"),
-            onPressed: () => _goBack(widget.baseContext),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FlatButton(
+                child: Text("Back"),
+                onPressed: () => _goBack(widget.baseContext),
+              ),
+              FlatButton(
+                child: Text("Refresh"),
+                onPressed: () => _refresh(widget.baseContext, widget.isPending),
+              ),
+            ],
           ),
           // AwesomeButton(
           //   blurRadius: 10.0,
@@ -78,7 +88,6 @@ class _SearchScreenState extends State<SearchScreen> {
               (elector) => ListTile(
                 title: Text(elector.id),
                 subtitle: Text(elector.nic),
-                trailing: _buildStateTail(elector.state),
                 onTap: () {
                   _handleTap(elector);
                 },
@@ -165,47 +174,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 SizedBox(
                   height: 40.0,
                 ),
-                (elector.state == VoteState.PENDING ||
-                        elector.state == VoteState.IN_QUEUE)
-                    ? elector.state == VoteState.PENDING
-                        ? FlatButton(
-                            child: Text(
-                              "Update to In Queue",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            color: Colors.blueAccent,
-                            onPressed: () => _updateVoterState(elector),
-                          )
-                        : Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: FlatButton(
-                                  child: Text(
-                                    "Vote Error",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  color: ColorPalette.error,
-                                  onPressed: () =>
-                                      _updateVoterState(elector, isFine: false),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Expanded(
-                                child: FlatButton(
-                                  child: Text(
-                                    "Vote Success",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  color: ColorPalette.success,
-                                  onPressed: () =>
-                                      _updateVoterState(elector, isFine: true),
-                                ),
-                              ),
-                            ],
-                          )
-                    : Container()
+                FlatButton(
+                  child: Text(
+                    "Update to In Queue",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Colors.blueAccent,
+                  onPressed: () =>
+                      _updateVoterState(elector.id, widget.isPending),
+                )
               ],
             ),
           ),
@@ -214,77 +191,20 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildStateTail(VoteState state) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: getStateColor(state),
-      ),
-      child: Text(
-        getStateText(state),
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  void _updateVoterState(Elector elector, {bool isFine}) {
+  void _updateVoterState(String id, bool isPending) {
     setState(() {
       _editingController.text = "";
     });
     Navigator.pop(context);
-
-    switch (elector.state) {
-      case VoteState.PENDING:
-        setState(() {
-          elector.state = VoteState.IN_QUEUE;
-        });
-        break;
-
-      case VoteState.IN_QUEUE:
-        setState(() {
-          elector.state =
-              isFine ? VoteState.VOTE_SUCCESS : VoteState.VOTE_ERROR;
-        });
-        break;
-
-      default:
-    }
-  }
-
-  Color getStateColor(VoteState state) {
-    switch (state) {
-      case VoteState.IN_QUEUE:
-        return ColorPalette.pending;
-
-      case VoteState.VOTE_SUCCESS:
-        return ColorPalette.success;
-
-      case VoteState.VOTE_ERROR:
-        return ColorPalette.error;
-
-      default:
-        return Colors.white;
-    }
-  }
-
-  String getStateText(VoteState state) {
-    switch (state) {
-      case VoteState.IN_QUEUE:
-        return "In Queue";
-
-      case VoteState.VOTE_SUCCESS:
-        return "Success";
-
-      case VoteState.VOTE_ERROR:
-        return "Error";
-
-      default:
-        return "";
-    }
+    BlocProvider.of<AppBloc>(context)
+        .add(isPending ? UpdateToQueued(id) : UpdateToVoted(id));
   }
 
   void _goBack(BuildContext context) {
     BlocProvider.of<AppBloc>(context).add(ChangeMethod());
+  }
+
+  void _refresh(BuildContext context, bool isPending) {
+    BlocProvider.of<AppBloc>(context).add(Refresh(isPending ? 0 : 1));
   }
 }

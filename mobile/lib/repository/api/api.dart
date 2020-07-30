@@ -11,4 +11,9 @@ abstract class API {
       String district, String division, String station);
   Future<List<String>> fetchInQueue(String token, String election,
       String district, String division, String station);
+
+  Future<bool> updateToQueued(String token, String election, String district,
+      String division, String station, String voterId, DateTime timestamp);
+  Future<bool> updateToVoted(String token, String election, String district,
+      String division, String station, String voterId, DateTime timestamp);
 }

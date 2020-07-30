@@ -17,8 +17,9 @@ class AppMethodSelect extends AppState {}
 
 class AppElectorsLoaded extends AppState {
   final List<Elector> electors;
+  final isPending;
 
-  AppElectorsLoaded({this.electors});
+  AppElectorsLoaded({this.electors, this.isPending});
 }
 
 class AppError extends AppState {
