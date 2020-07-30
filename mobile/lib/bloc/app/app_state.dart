@@ -13,12 +13,7 @@ class AppMetaLoaded extends AppState {
   AppMetaLoaded({this.meta});
 }
 
-class AppMethodSelect extends AppState {
-  final List<Elector> all;
-  final List<Elector> inQueue;
-
-  AppMethodSelect({this.all, this.inQueue});
-}
+class AppMethodSelect extends AppState {}
 
 class AppElectorsLoaded extends AppState {
   final List<Elector> electors;

@@ -28,7 +28,6 @@ class Repository {
 
   Future<List<Elector>> fetchElectors(
       String election, String district, String division, String station) {
-    _saveInstanceData(election, district, division, station);
     return _api.fetchElectors(
         accessToken, election, district, division, station);
   }
@@ -39,7 +38,7 @@ class Repository {
         accessToken, election, district, division, station);
   }
 
-  void _saveInstanceData(
+  void saveInstanceData(
       String election, String district, String division, String station) {
     SharedPreferences.getInstance().then((pref) {
       pref.setString("election", election);

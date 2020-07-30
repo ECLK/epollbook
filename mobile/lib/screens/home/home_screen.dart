@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    _setTitle();
+    // _setTitle();
     _appBloc.add(FetchMeta(ELECTION));
     super.initState();
   }
@@ -59,18 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          // _title,
-          "Welcome",
-          style: TextStyle(
-            color: Theme.of(context).accentColor,
-            fontSize: 30,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       body: SafeArea(
           child: BlocProvider(
         lazy: true,
@@ -83,8 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else if (state is AppMetaLoaded) {
               return _buildMetaLoadedScreen(context, state.meta);
             } else if (state is AppMethodSelect) {
-              return _buildMethodSelectScreen(
-                  context, state.all, state.inQueue);
+              return _buildMethodSelectScreen(context);
             } else if (state is AppElectorsLoaded) {
               return _buildElectorsLoadedScreen(context, state.electors);
             } else if (state is AppError) {
@@ -167,18 +154,24 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: 40),
           FlatButton(
             child: Text("Proceed"),
-            onPressed: () =>
-                _handleProceed(context, _currentDivision, _currentStation),
+            onPressed: _currentDivision != "Select one" &&
+                    _currentStation != "Select one"
+                ? () =>
+                    _handleProceed(context, _currentDivision, _currentStation)
+                : null,
           )
         ],
       ),
     );
   }
 
-  _buildMethodSelectScreen(
-      BuildContext context, List<Elector> all, List<Elector> inQueue) {
+  _buildMethodSelectScreen(BuildContext context) {
     return Column(
       children: <Widget>[
+        FlatButton(
+          child: Text("Back"),
+          onPressed: () => _goBack(context),
+        ),
         FlatButton(
           child: Text("Pending"),
           onPressed: () => _handleMethodSelect(context, 0),
@@ -190,20 +183,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  void _handleMethodSelect(BuildContext context, int method) {
-    BlocProvider.of<AppBloc>(context).add(SelecMethod(method));
-  }
-
-  SearchScreen _buildElectorsLoadedScreen(
-          BuildContext context, List<Elector> electors) =>
-      SearchScreen(electors);
-
-  ErrorScreen _buildErrorScreen(String error) => ErrorScreen(error);
 }
+
+void _handleMethodSelect(BuildContext context, int method) {
+  BlocProvider.of<AppBloc>(context).add(FetchElectors(method));
+}
+
+SearchScreen _buildElectorsLoadedScreen(
+        BuildContext context, List<Elector> electors) =>
+    SearchScreen(context, electors);
 
 void _handleProceed(
     BuildContext context, String _currentDivision, String _currentStation) {
-  BlocProvider.of<AppBloc>(context).add(
-      FetchElectors(ELECTION, DISTRICT, _currentDivision, _currentStation));
+  BlocProvider.of<AppBloc>(context)
+      .add(SaveMeta(ELECTION, DISTRICT, _currentDivision, _currentStation));
 }
+
+void _goBack(BuildContext context) {
+  BlocProvider.of<AppBloc>(context).add(ChangeMeta(ELECTION));
+}
+
+ErrorScreen _buildErrorScreen(String error) => ErrorScreen(error);

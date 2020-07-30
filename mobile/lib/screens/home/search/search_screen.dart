@@ -1,5 +1,8 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/bloc/app/app_bloc.dart';
+import 'package:mobile/config/config.dart';
 import 'package:mobile/models/elector.dart';
 import 'package:mobile/styles/color_palette.dart';
 
@@ -7,10 +10,12 @@ class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
 
+  final BuildContext baseContext;
+
   final List<Elector> data;
   List<Elector> electors;
 
-  SearchScreen(this.data) {
+  SearchScreen(this.baseContext, this.data) {
     electors = data;
   }
 }
@@ -24,6 +29,10 @@ class _SearchScreenState extends State<SearchScreen> {
       margin: EdgeInsets.all(18.0),
       child: Column(
         children: <Widget>[
+          FlatButton(
+            child: Text("Back"),
+            onPressed: () => _goBack(widget.baseContext),
+          ),
           // AwesomeButton(
           //   blurRadius: 10.0,
           //   splashColor: Color.fromRGBO(255, 255, 255, 0.4),
@@ -273,5 +282,9 @@ class _SearchScreenState extends State<SearchScreen> {
       default:
         return "";
     }
+  }
+
+  void _goBack(BuildContext context) {
+    BlocProvider.of<AppBloc>(context).add(ChangeMethod());
   }
 }

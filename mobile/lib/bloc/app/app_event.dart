@@ -9,23 +9,25 @@ class FetchMeta extends AppEvent {
   FetchMeta(this.election);
 }
 
-class FetchElectors extends AppEvent {
+class SaveMeta extends AppEvent {
   final String election;
   final String district;
   final String division;
   final String station;
 
-  FetchElectors(this.election, this.district, this.division, this.station);
+  SaveMeta(this.election, this.district, this.division, this.station);
 }
 
-class SelecMethod extends AppEvent {
+class FetchElectors extends AppEvent {
   final int option;
 
-  SelecMethod(this.option);
+  FetchElectors(this.option);
 }
 
-class ChangeSelection extends AppEvent {
+class ChangeMeta extends AppEvent {
   final String election;
 
-  ChangeSelection(this.election);
+  ChangeMeta(this.election);
 }
+
+class ChangeMethod extends AppEvent {}
