@@ -33,14 +33,34 @@ class _SearchScreenState extends State<SearchScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FlatButton(
-                child: Text("Back"),
-                onPressed: () => _goBack(widget.baseContext),
+              InkWell(
+                child: Icon(Icons.refresh),
+                onTap: () => _refresh(widget.baseContext, widget.isPending),
               ),
-              FlatButton(
-                child: Text("Refresh"),
-                onPressed: () => _refresh(widget.baseContext, widget.isPending),
-              ),
+              PopupMenuButton(
+                elevation: 2,
+                onSelected: (int value) {
+                  switch (value) {
+                    case 0:
+                      _goBack(widget.baseContext);
+                      break;
+
+                    case 1:
+                      _gotoMetadataChange(context);
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                    value: 0,
+                    child: Text("Change Position"),
+                  ),
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text("Change Metadata"),
+                  )
+                ].toList(),
+              )
             ],
           ),
           // AwesomeButton(
@@ -64,17 +84,49 @@ class _SearchScreenState extends State<SearchScreen> {
           SizedBox(
             height: 40.0,
           ),
-          TextField(
-            decoration: InputDecoration(
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 12,
+                ),
+              ],
+            ),
+            child: TextField(
+              style: TextStyle(color: Colors.black),
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                focusColor: ColorPalette.primary,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(width: 0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(width: 0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(width: 1, color: ColorPalette.primary),
+                ),
                 hintText: "Search by Elector ID / NIC",
-                suffixIcon: Icon(Icons.search)),
-            // TODO: set autofocus
-            // autofocus: true,
-            controller: _editingController,
-            onChanged: (value) {
-              _onSearch(value);
-            },
+                suffixIcon: Icon(
+                  Icons.search,
+                  color: Colors.black,
+                ),
+              ),
+              // TODO: set autofocus
+              // autofocus: true,
+              controller: _editingController,
+              onChanged: (value) {
+                _onSearch(value);
+              },
+            ),
           ),
+          SizedBox(height: 20),
           Expanded(child: _buildSearchResults()),
         ],
       ),
@@ -82,18 +134,51 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchResults() {
-    return ListView(
-        children: widget.electors
-            .map(
-              (elector) => ListTile(
-                title: Text(elector.id),
-                subtitle: Text(elector.nic),
-                onTap: () {
-                  _handleTap(elector);
-                },
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 12,
+          ),
+        ],
+      ),
+      child: widget.electors.isNotEmpty
+          ? ListView(
+              children: widget.electors
+                  .map(
+                    (elector) => ListTile(
+                      title: Text(
+                        elector.id,
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      subtitle: Text(elector.nic),
+                      onTap: () {
+                        _handleTap(elector);
+                      },
+                    ),
+                  )
+                  .toList())
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.warning,
+                    color: ColorPalette.idle,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Nothing so far",
+                    style: TextStyle(color: ColorPalette.idle),
+                  )
+                ],
               ),
-            )
-            .toList());
+            ),
+    );
   }
 
   void _scanQR() {
@@ -176,10 +261,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 FlatButton(
                   child: Text(
-                    "Update to In Queue",
+                    widget.isPending ? "Add to Queue" : "Mark as Voted",
                     style: TextStyle(color: Colors.white),
                   ),
-                  color: Colors.blueAccent,
+                  color: ColorPalette.primary,
                   onPressed: () =>
                       _updateVoterState(elector.id, widget.isPending),
                 )
@@ -202,6 +287,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _goBack(BuildContext context) {
     BlocProvider.of<AppBloc>(context).add(ChangeMethod());
+  }
+
+  void _gotoMetadataChange(BuildContext context) {
+    BlocProvider.of<AppBloc>(context).add(ChangeMeta(ELECTION));
   }
 
   void _refresh(BuildContext context, bool isPending) {
