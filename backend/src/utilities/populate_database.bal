@@ -30,8 +30,8 @@ function loadData(string srcFilePath) returns error? {
 }
 
 function createData() returns table<Elector> {
-    string[] gender_SI = ["ස්ත්‍රී", "பெண்"];
-    string[] gender_TA = ["ස්ත්‍රී", "ஆண்"];
+    string[] gender_SI = ["ස්ත්‍රී", "පුරුෂ"];
+    string[] gender_TA = ["பெண்", "ஆண்"];
     table<Elector> data = table {
         {YearOfRevision,DistrictSI,DistrictTA,PollingDivisionSI,PollingDivisionTA,PollingStationID,GND_SI,GND_TA,VS_SI,VS_TA,HouseNo,ElectorID,SLIN_NIC,Name_SI,Name_TA,Gender_SI,Gender_TA},
         [
@@ -40,14 +40,14 @@ function createData() returns table<Elector> {
     };
     foreach var pd in 0 ... 3 {
         foreach var psNum in 1 ... 5 {
-            string gnd = string`PD${pd+1}-GND-${math:randomInRange(1,5).toString()}`;
+            string gnd = string`PD${pd+1}-GND-${checkpanic math:randomInRange(1,6)}`;
             int nelectors = 1500 + 50 * checkpanic math:randomInRange(1, 10);
             foreach var elector in 1 ... nelectors {
-                int age = checkpanic math:randomInRange(18, 99);
-                int gender = checkpanic math:randomInRange(0,1);
-                int dobdays = checkpanic math:randomInRange(1,365);
-                int seqNo = checkpanic math:randomInRange(1,999);
-                string NIC = string`${age}${gender == 0 ? dobdays : dobdays+500}${seqNo}v`;
+                int yearOfBirth = checkpanic math:randomInRange(10, 93); // born from 1910 to 1992 (just for tests)
+                int gender = checkpanic math:randomInRange(0,2);
+                int dobdays = checkpanic math:randomInRange(1,366);
+                int seqNo = checkpanic math:randomInRange(1,1000);
+                string NIC = string`${yearOfBirth}${io:sprintf("%03d", gender == 0 ? dobdays : dobdays+500)}${io:sprintf("%03d",seqNo)}v`;
                 Elector e = {
                     YearOfRevision: "2019",
                     DistrictSI: "1 - කොළඹ",
@@ -59,7 +59,7 @@ function createData() returns table<Elector> {
                     GND_TA: gnd+"_TA",
                     VS_SI: "VS_SI",
                     VS_TA: "VS_TA",
-                    HouseNo: string`HouseNo ${checkpanic math:randomInRange(100,200)} Foo Street`,
+                    HouseNo: string`${checkpanic math:randomInRange(1,200)}`,
                     ElectorID: elector.toString(),
                     SLIN_NIC: NIC,
                     Name_SI: string`Name-SI-elector#-${elector}`,
