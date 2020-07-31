@@ -21,7 +21,7 @@ jdbc:Client dbClient = new ({
 # + stationID - ID of the polling station
 # + return - list of matching electors
 function getElectors(string election, string districtSI, string divisionSI, string stationID) returns @tainted json[]|error {
-    string SELECT_ELECTORS = "SELECT ID, ElectorID, NIC, Name_SI, Name_TA FROM voter_registry WHERE DistrictSI = ? AND PollingDivisionSI = ? AND PollingStationID = ?";
+    string SELECT_ELECTORS = "SELECT ID, ElectorID, NIC, Name_SI, Name_TA, Gender_SI, GND_SI, VS_SI, HouseNo FROM voter_registry WHERE DistrictSI = ? AND PollingDivisionSI = ? AND PollingStationID = ?";
     table<record{}> ret = check dbClient->select(SELECT_ELECTORS, Elector, districtSI, divisionSI, stationID);
     return <json[]> jsonutils:fromTable(ret);
 }
