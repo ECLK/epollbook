@@ -36,7 +36,7 @@ function setVoterStatus(string election, string districtSI, string divisionSI, s
 }
 
 function getQueue(string election, string districtSI, string divisionSI, string stationID) returns @tainted json[]|error {
-    string SELECT_QUEUE = "SELECT ID FROM vote_records where Status='QUEUED' AND DistrictSI = ? AND PollingDivisionSI = ? AND PollingStationID = ?";
-    table<record{}> ret = check dbClient->select(SELECT_QUEUE, record { string ID; }, districtSI, divisionSI, stationID);
+    string SELECT_QUEUE = "SELECT ID FROM vote_records where Status= ? AND DistrictSI = ? AND PollingDivisionSI = ? AND PollingStationID = ?";
+    table<record{}> ret = check dbClient->select(SELECT_QUEUE, record { string ID; }, STATUS_QUEUED, districtSI, divisionSI, stationID);
     return <json[]> jsonutils:fromTable(ret);
 }

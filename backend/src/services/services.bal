@@ -3,6 +3,9 @@ import ballerina/io;
 
 listener http:Listener hl = new(9090);
 
+const STATUS_QUEUED = "QUEUED";
+const STATUS_VOTED = "VOTED";
+
 @http:ServiceConfig {
     basePath: "/"
 }
@@ -34,10 +37,9 @@ service PollBook on hl {
         methods: ["POST"]
     }
     resource function queued(http:Caller hc, http:Request hr, string election, string district, string division, string station, string voterID, string timestamp) returns error? {
-        string status = "QUEUED";
-        io:println(string `Recording ${status} for election ${election} by voter ${voterID} at ${timestamp} in district ${district}, division ${division}, polling station ${station}`);
-        check setVoterStatus(election, district, division, station, voterID, timestamp, status);
-        check hc->accepted(status);
+        io:println(string `Recording ${STATUS_QUEUED} for election ${election} by voter ${voterID} at ${timestamp} in district ${district}, division ${division}, polling station ${station}`);
+        check setVoterStatus(election, district, division, station, voterID, timestamp, STATUS_QUEUED);
+        check hc->accepted(STATUS_QUEUED);
     }
 
     # Return list of electors currently in the queue
@@ -47,7 +49,6 @@ service PollBook on hl {
         methods: ["GET"]
     }
     resource function showQueue(http:Caller hc, http:Request hr, string election, string district, string division, string station) returns @tainted error? {
-        string status = "QUEUED";
         json[] voters = check getQueue(election, district, division, station);
         io:println(string `Returning queue of voters for ${election} for district=${district}, division=${division}, station=${station}: ${voters.length().toString()} voters`);
         check hc->ok(<@untainted> voters);
@@ -60,9 +61,8 @@ service PollBook on hl {
         methods: ["POST"]
     }
     resource function voted(http:Caller hc, http:Request hr, string election, string district, string division, string station, string voterID, string timestamp) returns error? {
-        string status = "VOTED";
-        io:println(string `Recording ${status} for election ${election} by voter ${voterID} at ${timestamp} in district ${district}, division ${division}, polling station ${station}`);
-        check setVoterStatus(election, district, division, station, voterID, timestamp, status);
-        check hc->accepted(status);
+        io:println(string `Recording ${STATUS_VOTED} for election ${election} by voter ${voterID} at ${timestamp} in district ${district}, division ${division}, polling station ${station}`);
+        check setVoterStatus(election, district, division, station, voterID, timestamp, STATUS_VOTED);
+        check hc->accepted(STATUS_VOTED);
     }
 }
