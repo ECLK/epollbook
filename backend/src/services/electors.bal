@@ -12,6 +12,9 @@ jdbc:Client dbClient = new ({
     password: config:getAsString("eclk.epb.db.password", "root"),
     dbOptions: {
         useSSL: config:getAsString("eclk.epb.db.useSsl", "false")
+    },
+    poolOptions: {
+        maximumPoolSize: config:getAsInt("eclk.epb.db.poolsize", 50)
     }
 });
 
@@ -58,6 +61,7 @@ function getVoterAge(string elector) returns @tainted int {
         return -1;
     } else {
         record { string nationalID; } res = <record { string nationalID; }> ret.getNext();
+        ret.close();
         nic = res.nationalID;
     }
 
