@@ -12,16 +12,6 @@ const STATUS_VOTED = "VOTED";
 }
 service PollBook on hl {
     @http:ResourceConfig {
-        path: "/electors/{election}/{district}/{division}/{station}",
-        methods: ["GET"]
-    }
-    resource function electors(http:Caller hc, http:Request hr, string election, string district, string division, string station) returns @tainted error? {
-        json[] sel = check getElectors(election, district, division, station);
-        log:printInfo(string `Returning election data for ${election} for district=${district}, division=${division}, station=${station} with ${sel.length().toString()} items`);
-        check hc->ok(<@untainted> sel);
-    }
-
-    @http:ResourceConfig {
         path: "/info/{election}",
         methods: ["GET"]
     }
@@ -29,6 +19,16 @@ service PollBook on hl {
         json[] districts = check getInfo(election);
         log:printInfo(string `Returning election info for ${election} with ${districts.length().toString()} items`);
         check hc->ok(<@untainted> districts); 
+    }
+
+    @http:ResourceConfig {
+        path: "/electors/{election}/{district}/{division}/{station}",
+        methods: ["GET"]
+    }
+    resource function electors(http:Caller hc, http:Request hr, string election, string district, string division, string station) returns @tainted error? {
+        json[] sel = check getElectors(election, district, division, station);
+        log:printInfo(string `Returning election data for ${election} for district=${district}, division=${division}, station=${station} with ${sel.length().toString()} items`);
+        check hc->ok(<@untainted> sel);
     }
 
     # Record the presence of an elector in the queue at a certain polling station at a given time.
