@@ -69,7 +69,7 @@ CREATE TABLE VoteRecords (
     ID INT NOT NULL,
     Age int DEFAULT -1,
     VotingStatus enum('NOT-VOTED','QUEUED','VOTED') DEFAULT 'NOT-VOTED',
-    TimeStamp timestamp DEFAULT NULL,
+    TimeStamp timestamp DEFAULT CURRENT_TIMESTAMP(),
     PRIMARY KEY (ID),
     CONSTRAINT ID FOREIGN KEY (ID) REFERENCES ElectorRegistry (ID)
 );
