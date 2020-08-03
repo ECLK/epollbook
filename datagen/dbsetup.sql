@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS epollbook;
+CREATE DATABASE epollbook CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE DATABASE epollbook;
 USE epollbook;
 
@@ -67,7 +69,7 @@ CREATE TABLE VoteRecords (
     ID INT NOT NULL,
     Age int DEFAULT -1,
     VotingStatus enum('NOT-VOTED','QUEUED','VOTED') DEFAULT 'NOT-VOTED',
-    TimeStamp timestamp DEFAULT NULL,
+    TimeStamp timestamp DEFAULT CURRENT_TIMESTAMP(),
     PRIMARY KEY (ID),
     CONSTRAINT ID FOREIGN KEY (ID) REFERENCES ElectorRegistry (ID)
 );

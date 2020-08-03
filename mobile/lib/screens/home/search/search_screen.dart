@@ -1,68 +1,28 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/bloc/app/app_bloc.dart';
+import 'package:mobile/config/config.dart';
 import 'package:mobile/models/elector.dart';
 import 'package:mobile/styles/color_palette.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
+
+  final BuildContext baseContext;
+  final bool isPending;
+
+  final List<Elector> data;
+  List<Elector> electors;
+
+  SearchScreen(this.baseContext, this.data, this.isPending) {
+    electors = data;
+  }
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Elector> data = [
-    Elector(
-        id: "2332123",
-        nic: "961881579v",
-        fullName: "John Doe",
-        address: "Colombo 3",
-        age: "23",
-        gender: "Male"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female"),
-    Elector(
-        id: "2333221",
-        nic: "988771233v",
-        fullName: "Alice Fender",
-        address: "Colombo 7",
-        age: "21",
-        gender: "Female")
-  ];
-
-  List<Elector> electors;
-
   final TextEditingController _editingController = TextEditingController();
-
-  @override
-  void initState() {
-    electors = data;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,38 +30,103 @@ class _SearchScreenState extends State<SearchScreen> {
       margin: EdgeInsets.all(18.0),
       child: Column(
         children: <Widget>[
-          AwesomeButton(
-            blurRadius: 10.0,
-            splashColor: Color.fromRGBO(255, 255, 255, 0.4),
-            borderRadius: BorderRadius.circular(50.0),
-            height: 100.0,
-            width: 100.0,
-            color: Colors.blueAccent,
-            child: Icon(
-              Icons.crop_free,
-              color: Colors.white,
-              size: 40,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              InkWell(
+                child: Icon(Icons.refresh),
+                onTap: () => _refresh(widget.baseContext, widget.isPending),
+              ),
+              PopupMenuButton(
+                elevation: 2,
+                onSelected: (int value) {
+                  switch (value) {
+                    case 0:
+                      _goBack(widget.baseContext);
+                      break;
+
+                    case 1:
+                      _gotoMetadataChange(context);
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem(
+                    value: 0,
+                    child: Text("Change Position"),
+                  ),
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text("Change Metadata"),
+                  )
+                ].toList(),
+              )
+            ],
+          ),
+          // AwesomeButton(
+          //   blurRadius: 10.0,
+          //   splashColor: Color.fromRGBO(255, 255, 255, 0.4),
+          //   borderRadius: BorderRadius.circular(50.0),
+          //   height: 100.0,
+          //   width: 100.0,
+          //   color: Colors.blueAccent,
+          //   child: Icon(
+          //     Icons.crop_free,
+          //     color: Colors.white,
+          //     size: 40,
+          //   ),
+          //   onTap: _scanQR,
+          // ),
+          // SizedBox(
+          //   height: 40.0,
+          // ),
+          // Text("OR"),
+          SizedBox(
+            height: 40.0,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 12,
+                ),
+              ],
             ),
-            onTap: _scanQR,
-          ),
-          SizedBox(
-            height: 40.0,
-          ),
-          Text("OR"),
-          SizedBox(
-            height: 40.0,
-          ),
-          TextField(
-            decoration: InputDecoration(
+            child: TextField(
+              style: TextStyle(color: Colors.black),
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                focusColor: ColorPalette.primary,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(width: 0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(width: 0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(width: 1, color: ColorPalette.primary),
+                ),
                 hintText: "Search by Elector ID / NIC",
-                suffixIcon: Icon(Icons.search)),
-            // TODO: set autofocus
-            // autofocus: true,
-            controller: _editingController,
-            onChanged: (value) {
-              _onSearch(value);
-            },
+                suffixIcon: Icon(
+                  Icons.search,
+                  color: Colors.black,
+                ),
+              ),
+              // TODO: set autofocus
+              // autofocus: true,
+              controller: _editingController,
+              onChanged: (value) {
+                _onSearch(value);
+              },
+            ),
           ),
+          SizedBox(height: 20),
           Expanded(child: _buildSearchResults()),
         ],
       ),
@@ -109,19 +134,50 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchResults() {
-    return ListView(
-      children: electors
-          .map(
-            (elector) => ListTile(
-              title: Text(elector.id),
-              subtitle: Text(elector.nic),
-              trailing: _buildStateTail(elector.state),
-              onTap: () {
-                _handleTap(elector);
-              },
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 12,
+          ),
+        ],
+      ),
+      child: widget.electors.isNotEmpty
+          ? ListView(
+              children: widget.electors
+                  .map(
+                    (elector) => ListTile(
+                      title: Text(
+                        elector.id,
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      subtitle: Text(elector.nic),
+                      onTap: () {
+                        _handleTap(elector);
+                      },
+                    ),
+                  )
+                  .toList())
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.warning,
+                    color: ColorPalette.idle,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Nothing so far",
+                    style: TextStyle(color: ColorPalette.idle),
+                  )
+                ],
+              ),
             ),
-          )
-          .toList(),
     );
   }
 
@@ -131,7 +187,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _onSearch(String value) {
     setState(() {
-      electors = data
+      widget.electors = widget.data
           .where((elector) =>
               elector.id.toLowerCase().contains(value.toLowerCase()) ||
               elector.nic.toLowerCase().contains(value.toLowerCase()))
@@ -148,7 +204,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  "Elector Id",
+                  "ID",
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
@@ -156,6 +212,20 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 Text(
                   elector.id,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Elector Id",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  elector.electorId,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
@@ -176,102 +246,28 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 20.0,
                 ),
                 Text(
-                  "Full Name",
+                  "Name",
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
                   ),
                 ),
                 Text(
-                  elector.fullName,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Age",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  elector.age,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Gender",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  elector.gender,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Address",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  elector.address,
+                  elector.nameSi,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(
                   height: 40.0,
                 ),
-                (elector.state == VoteState.PENDING ||
-                        elector.state == VoteState.IN_QUEUE)
-                    ? elector.state == VoteState.PENDING
-                        ? FlatButton(
-                            child: Text(
-                              "Update to In Queue",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            color: Colors.blueAccent,
-                            onPressed: () => _updateVoterState(elector),
-                          )
-                        : Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: FlatButton(
-                                  child: Text(
-                                    "Vote Error",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  color: ColorPalette.error,
-                                  onPressed: () =>
-                                      _updateVoterState(elector, isFine: false),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Expanded(
-                                child: FlatButton(
-                                  child: Text(
-                                    "Vote Success",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  color: ColorPalette.success,
-                                  onPressed: () =>
-                                      _updateVoterState(elector, isFine: true),
-                                ),
-                              ),
-                            ],
-                          )
-                    : Container()
+                FlatButton(
+                  child: Text(
+                    widget.isPending ? "Add to Queue" : "Mark as Voted",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: ColorPalette.primary,
+                  onPressed: () =>
+                      _updateVoterState(elector.id, widget.isPending),
+                )
               ],
             ),
           ),
@@ -280,73 +276,24 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildStateTail(VoteState state) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: getStateColor(state),
-      ),
-      child: Text(
-        getStateText(state),
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  void _updateVoterState(Elector elector, {bool isFine}) {
+  void _updateVoterState(String id, bool isPending) {
     setState(() {
       _editingController.text = "";
     });
     Navigator.pop(context);
-
-    switch (elector.state) {
-      case VoteState.PENDING:
-        setState(() {
-          elector.state = VoteState.IN_QUEUE;
-        });
-        break;
-
-      case VoteState.IN_QUEUE:
-        setState(() {
-          elector.state =
-              isFine ? VoteState.VOTE_SUCCESS : VoteState.VOTE_ERROR;
-        });
-        break;
-
-      default:
-    }
+    BlocProvider.of<AppBloc>(context)
+        .add(isPending ? UpdateToQueued(id) : UpdateToVoted(id));
   }
 
-  Color getStateColor(VoteState state) {
-    switch (state) {
-      case VoteState.IN_QUEUE:
-        return ColorPalette.pending;
-
-      case VoteState.VOTE_SUCCESS:
-        return ColorPalette.success;
-
-      case VoteState.VOTE_ERROR:
-        return ColorPalette.error;
-
-      default:
-        return Colors.white;
-    }
+  void _goBack(BuildContext context) {
+    BlocProvider.of<AppBloc>(context).add(ChangeMethod());
   }
 
-  String getStateText(VoteState state) {
-    switch (state) {
-      case VoteState.IN_QUEUE:
-        return "In Queue";
+  void _gotoMetadataChange(BuildContext context) {
+    BlocProvider.of<AppBloc>(context).add(ChangeMeta(ELECTION));
+  }
 
-      case VoteState.VOTE_SUCCESS:
-        return "Success";
-
-      case VoteState.VOTE_ERROR:
-        return "Error";
-
-      default:
-        return "";
-    }
+  void _refresh(BuildContext context, bool isPending) {
+    BlocProvider.of<AppBloc>(context).add(Refresh(isPending ? 0 : 1));
   }
 }

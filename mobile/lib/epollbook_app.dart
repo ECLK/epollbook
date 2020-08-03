@@ -28,8 +28,10 @@ class EPollBookApp extends StatelessWidget {
               return _buildLoadingScreen();
             } else if (state is AuthSuccess) {
               return _buildHomeScreen();
-            } else if (state is AuthError) {}
-            return _buildAuthScreen(error: "Sign in failed");
+            } else if (state is AuthError) {
+              return _buildAuthScreen(error: "Sign in failed");
+            }
+            return Container();
           },
         ),
       ),
