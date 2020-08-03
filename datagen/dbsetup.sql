@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS epollbook;
+CREATE DATABASE epollbook CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE DATABASE epollbook;
 USE epollbook;
 
