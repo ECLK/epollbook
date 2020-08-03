@@ -1,11 +1,19 @@
-type Elector record {
+type InfoResponse record  {
+    string DistrictName;
+    int DistrictID;
+    string PollingDivisionName;
+    string PollingDivisionID;
+    int PollingStationID;
+};
+
+type ElectorResponse record {
     int ID;
     string ElectorID;
-    string NIC;
+    string NationalID;
+    string GNDivision_SI;
+    string Street_SI;
+    string HouseNo;
     string Name_SI;
     string Name_TA;
-    string Gender_SI;
-    string GND_SI;
-    string VS_SI;
-    string HouseNo;
+    string Sex;
 };

@@ -1,0 +1,5 @@
+Setting up the database:
+
+1. Load dbsetup.sql: mysql -u XX -p < dbsetup.sql
+2. Load the electors (either temp generated ones or the ones generated from the actual elector DB)
+3. Run afterdataload.sql to populate the VoteRecords table

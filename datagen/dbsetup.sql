@@ -64,11 +64,10 @@ CREATE TABLE VoteRecords (
     DistrictID INT NOT NULL,  
     PollingDivisionID varchar(1) NOT NULL,    
     PollingStationID INT NOT NULL,    
-    ElectorID INT NOT NULL,
+    ID INT NOT NULL,
     Age int DEFAULT -1,
     VotingStatus enum('NOT-VOTED','QUEUED','VOTED') DEFAULT 'NOT-VOTED',
-    QueuedTime timestamp DEFAULT NULL,
-    VotedTime timestamp DEFAULT NULL,
-    PRIMARY KEY (ElectorID),
-    CONSTRAINT ID FOREIGN KEY (ElectorID) REFERENCES ElectorRegistry (ID)
+    TimeStamp timestamp DEFAULT NULL,
+    PRIMARY KEY (ID),
+    CONSTRAINT ID FOREIGN KEY (ID) REFERENCES ElectorRegistry (ID)
 );
