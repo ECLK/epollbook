@@ -50,7 +50,7 @@ service PollBook on hl {
         methods: ["GET"]
     }
     resource function showQueue(http:Caller hc, http:Request hr, string election, string district, string division, string station) returns @tainted error? {
-        json[] voters = check getQueue(election, district, division, station);
+        json[] voters = check getInStatus(election, district, division, station, STATUS_QUEUED);
         log:printInfo(string `Returning queue of voters for ${election} for district=${district}, division=${division}, station=${station}: ${voters.length().toString()} voters`);
         check hc->ok(<@untainted> voters);
     }
@@ -67,6 +67,18 @@ service PollBook on hl {
         check hc->accepted(STATUS_VOTED);
     }
 
+    # Return list of electors who have voted so far
+    # + return - error if something goes wrong
+    @http:ResourceConfig {
+        path: "/show-voted/{election}/{district}/{division}/{station}",
+        methods: ["GET"]
+    }
+    resource function showVoted(http:Caller hc, http:Request hr, string election, string district, string division, string station) returns @tainted error? {
+        json[] voters = check getInStatus(election, district, division, station, STATUS_VOTED);
+        log:printInfo(string `Returning list of voters for ${election} for district=${district}, division=${division}, station=${station}: ${voters.length().toString()} voters`);
+        check hc->ok(<@untainted> voters);
+    }
+    
     # Reset the voting status of an elector in an election at a certain polling station at a given time.
     # This is called if a voter was mistakenly selected as voting or queuing
     # + return - error if something goes wrong
