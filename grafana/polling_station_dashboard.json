@@ -64,7 +64,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1596448286015,
+  "iteration": 1596452272469,
   "links": [],
   "panels": [
     {
@@ -181,7 +181,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT Count(*) as \"Casted Votes\"\nFROM VoteRecords\nWHERE DistrictID = ${electoral_district_id} and PollingDivisionID = ${polling_division_id:singlequote} and PollingStationID = $polling_station and VotingStatus = \"VOTED\";\n",
+          "rawSql": "SELECT Count(*) as \"Casted Votes\"\nFROM VoteRecords\nWHERE $__timeFilter(Timestamp) and DistrictID = ${electoral_district_id} and PollingDivisionID = ${polling_division_id:singlequote} and PollingStationID = $polling_station and VotingStatus = \"VOTED\";\n",
           "refId": "A",
           "select": [
             [
@@ -440,6 +440,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {},
+          "decimals": 2,
           "mappings": [],
           "max": 100,
           "min": 0,
@@ -631,7 +632,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT concat(10*floor(Age/10), '-', 10*floor(Age/10) + 10) as \"range\",  count(*) as value, current_timestamp AS time\nFROM (\n      SELECT v.ID,Sex,Age\n      FROM VoteRecords as v\n      INNER JOIN ElectorRegistry ON v.ID = ElectorRegistry.ID\n\t    WHERE v.DistrictID = ${electoral_district_id} and v.PollingDivisionID = ${polling_division_id:singlequote} and \n\t    v.PollingStationID = $polling_station and  v.VotingStatus = \"VOTED\" and v.Age != -1 and Sex = \"MALE\" ) as t\ngroup by `range`\nORDER BY `range` ASC;",
+          "rawSql": "SELECT concat(10*floor(Age/10), '-', 10*floor(Age/10) + 10) as \"range\",  count(*) as value, current_timestamp AS time\nFROM (\n      SELECT v.ID,Sex,Age\n      FROM VoteRecords as v\n      INNER JOIN ElectorRegistry ON v.ID = ElectorRegistry.ID\n\t    WHERE v.DistrictID = ${electoral_district_id} and v.PollingDivisionID = ${polling_division_id:singlequote} and \n\t    v.PollingStationID = $polling_station and  v.VotingStatus = \"VOTED\" and v.Age != -1 and Sex = \"MALE\" and $__timeFilter(Timestamp)) as t\n\ngroup by `range`\nORDER BY `range` ASC;",
           "refId": "A",
           "select": [
             [
@@ -771,7 +772,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT concat(10*floor(Age/10), '-', 10*floor(Age/10) + 10) as \"range\",  count(*) as value, current_timestamp AS time\nFROM (\n      SELECT v.ID,Sex,Age\n      FROM VoteRecords as v\n      INNER JOIN ElectorRegistry ON v.ID = ElectorRegistry.ID\n\t    WHERE v.DistrictID = ${electoral_district_id} and v.PollingDivisionID = ${polling_division_id:singlequote} and \n\t    v.PollingStationID = $polling_station and  v.VotingStatus = \"VOTED\" and v.Age != -1 and Sex = \"FEMALE\" ) as t\ngroup by `range`\nORDER BY `range` ASC;",
+          "rawSql": "SELECT concat(10*floor(Age/10), '-', 10*floor(Age/10) + 10) as \"range\",  count(*) as value, current_timestamp AS time\nFROM (\n      SELECT v.ID,Sex,Age\n      FROM VoteRecords as v\n      INNER JOIN ElectorRegistry ON v.ID = ElectorRegistry.ID\n\t    WHERE v.DistrictID = ${electoral_district_id} and v.PollingDivisionID = ${polling_division_id:singlequote} and \n\t    v.PollingStationID = $polling_station and  v.VotingStatus = \"VOTED\" and v.Age != -1 and Sex = \"FEMALE\" and $__timeFilter(Timestamp)) as t\ngroup by `range`\nORDER BY `range` ASC;",
           "refId": "A",
           "select": [
             [
@@ -960,14 +961,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_MYSQL}",
-        "definition": "SELECT Count(*) \nFROM VoteRecords\nWHERE DistrictID = ${electoral_district_id} and PollingDivisionID = ${polling_division_id:singlequote} and PollingStationID = $polling_station and VotingStatus = \"VOTED\";\n\n",
+        "definition": "SELECT Count(*) \nFROM VoteRecords\nWHERE $__timeFilter(Timestamp) and DistrictID = ${electoral_district_id} and PollingDivisionID = ${polling_division_id:singlequote} and PollingStationID = $polling_station and VotingStatus = \"VOTED\";\n\n",
         "hide": 2,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "casted_votes",
         "options": [],
-        "query": "SELECT Count(*) \nFROM VoteRecords\nWHERE DistrictID = ${electoral_district_id} and PollingDivisionID = ${polling_division_id:singlequote} and PollingStationID = $polling_station and VotingStatus = \"VOTED\";\n\n",
+        "query": "SELECT Count(*) \nFROM VoteRecords\nWHERE $__timeFilter(Timestamp) and DistrictID = ${electoral_district_id} and PollingDivisionID = ${polling_division_id:singlequote} and PollingStationID = $polling_station and VotingStatus = \"VOTED\";\n\n",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1001,5 +1002,5 @@
   "timezone": "",
   "title": "Polling Station Dashboard - E Poll Book",
   "uid": "y_Ua1V9Wz",
-  "version": 47
+  "version": 49
 }
