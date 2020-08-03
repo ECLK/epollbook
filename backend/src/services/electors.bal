@@ -29,19 +29,6 @@ function getElectors(string election, string districtSI, string divisionSI, stri
     return <json[]> jsonutils:fromTable(ret);
 }
 
-// CREATE TABLE VoteRecords (
-//     Election varchar(10) NOT NULL,
-//     DistrictID INT NOT NULL,  
-//     PollingDivisionID varchar(1) NOT NULL,    
-//     PollingStationID INT NOT NULL,    
-//     ID INT NOT NULL,
-//     Age int DEFAULT -1,
-//     VotingStatus enum('NOT-VOTED','QUEUED','VOTED') DEFAULT 'NOT-VOTED',
-//    TimeStamp timestamp DEFAULT NULL,
-//     PRIMARY KEY (ID),
-//     CONSTRAINT ID FOREIGN KEY (ID) REFERENCES ElectorRegistry (ID)
-// );
-
 function setVoterStatus(string election, string districtID, string divisionID, string stationID, string voterID, string timestamp, string status) returns error? {
     string STATUSUPDATE = "REPLACE INTO VoteRecords(Election, DistrictID, PollingDivisionID, PollingStationID, ID, VotingStatus, Timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)";
     var res = dbClient->update(STATUSUPDATE, election, districtID, divisionID, stationID, voterID, status, timestamp);
