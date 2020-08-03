@@ -6,7 +6,7 @@ public function main(string? filePath = ()) returns @tainted error? {
     if filePath is () {
         check generateSQLInserts(createData());
     } else {
- //       check generateSQLInserts(check loadFromCSV(filePath));
+        check generateSQLInserts(check loadFromCSV(filePath));
     }
 }
 
