@@ -60,7 +60,6 @@ function getVoterAge(string elector) returns @tainted int {
         record { string nationalID; } res = <record { string nationalID; }> ret.getNext();
         nic = res.nationalID;
     }
-    log:printInfo(string`Got NIC for elector ${elector} as ${nic}`);
 
     int current_year = 20;
     int length_old_NIC = 9;
