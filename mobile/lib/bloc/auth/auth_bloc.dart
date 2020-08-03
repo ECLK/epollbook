@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import 'package:mobile/models/auth_user.dart';
-import 'package:mobile/models/login_response.dart';
 import 'package:mobile/models/user.dart';
+import 'package:mobile/repository/dto/login_response.dart';
 import 'package:mobile/repository/repository.dart';
 
 part 'auth_event.dart';

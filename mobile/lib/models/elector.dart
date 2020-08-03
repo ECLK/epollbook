@@ -1,31 +1,31 @@
-enum VoteState {
-  PENDING,
-  IN_QUEUE,
-  VOTE_SUCCESS,
-  VOTE_ERROR,
-}
-
 class Elector {
-  final String id, nic, fullName, gender, age, address;
-  VoteState state;
+  final String id, electorId, nic, nameSi, nameTa;
 
-  Elector(
-      {this.id,
-      this.nic,
-      this.fullName,
-      this.gender,
-      this.age,
-      this.address,
-      this.state = VoteState.PENDING});
+  Elector({
+    this.id,
+    this.electorId,
+    this.nic,
+    this.nameSi,
+    this.nameTa,
+  });
 
   factory Elector.fromJson(dynamic json) {
     return Elector(
-      id: json['id'],
-      nic: json['nic'],
-      fullName: json['full_name'],
-      gender: json['gender'],
-      age: json['age'],
-      address: json['address'],
+      id: json['ID'].toString(),
+      electorId: json['ElectorID'],
+      nic: json['NIC'],
+      nameSi: json['Name_SI'],
+      nameTa: json['Name_TA'],
+    );
+  }
+
+  factory Elector.error() {
+    return Elector(
+      id: "-1",
+      electorId: "-1",
+      nic: "-1",
+      nameSi: "-1",
+      nameTa: "-1",
     );
   }
 }
