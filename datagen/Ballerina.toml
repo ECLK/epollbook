@@ -8,8 +8,8 @@ target = "java8"
 [[platform.libraries]]
     artafactId = "mysql-connector-java"
     version = "5.1.49"
-    path = "lib/mysql-connector-java-5.1.49.jar"
+    path = "../backend/lib/mysql-connector-java-5.1.49.jar"
     groupId = "mysql"
-    modules = ["services"]
+    modules = ["datagen"]
 
 [dependencies]
