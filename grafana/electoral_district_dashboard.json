@@ -64,7 +64,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1596462290218,
+  "iteration": 1596462290228,
   "links": [],
   "panels": [
     {
@@ -504,7 +504,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT (COUNT(*)/${casted_votes}) * 100 as \"Male Voters (%)\"\nFROM ElectorRegistry\nWHERE Sex = 'MALE' and ID in (SELECT ID FROM VoteRecords WHERE DistrictID = ${electoral_district_id} and VotingStatus = \"VOTED\");",
+          "rawSql": "SELECT (COUNT(*)/${casted_votes}) * 100 as \"Male Voters (%)\"\nFROM ElectorRegistry\nWHERE Sex = 'MALE' and ID in (SELECT ID FROM VoteRecords WHERE $__timeFilter(Timestamp) and DistrictID = ${electoral_district_id} and VotingStatus = \"VOTED\");",
           "refId": "B",
           "select": [
             [
@@ -531,7 +531,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT (COUNT(*)/${casted_votes}) * 100 as \"Female Voters (%)\"\nFROM ElectorRegistry\nWHERE Sex = \"FEMALE\" and ID in (SELECT ID FROM VoteRecords WHERE DistrictID = ${electoral_district_id} and VotingStatus = \"VOTED\");",
+          "rawSql": "SELECT (COUNT(*)/${casted_votes}) * 100 as \"Female Voters (%)\"\nFROM ElectorRegistry\nWHERE Sex = \"FEMALE\" and ID in (SELECT ID FROM VoteRecords WHERE $__timeFilter(Timestamp) and DistrictID = ${electoral_district_id} and VotingStatus = \"VOTED\");",
           "refId": "C",
           "select": [
             [
@@ -936,5 +936,5 @@
   "timezone": "",
   "title": "Electoral District Dashboard - E Poll Book",
   "uid": "-8CSgjVGz",
-  "version": 4
+  "version": 5
 }
