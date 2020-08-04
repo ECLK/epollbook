@@ -42,8 +42,8 @@ function createData() returns table<DBElector> {
                 int yearOfBirth = checkpanic math:randomInRange(10, 93); // born from 1910 to 1992 (just for tests)
                 int gender = checkpanic math:randomInRange(0,2);
                 int dobdays = checkpanic math:randomInRange(1,366);
-                int seqNo = checkpanic math:randomInRange(1,1000);
-                string NIC = string`${yearOfBirth}${io:sprintf("%03d", gender == 0 ? dobdays : dobdays+500)}${io:sprintf("%03d",seqNo)}v`;
+                int seqNo = checkpanic math:randomInRange(1,10000); // technically 3 digit seq # + check digit but we don't worry
+                string NIC = string`${yearOfBirth}${io:sprintf("%03d", gender == 0 ? dobdays : dobdays+500)}${io:sprintf("%04d",seqNo)}v`;
                 DBElector e = {
                     YearOfRevision: "2019",
                     DistrictID: 1,
