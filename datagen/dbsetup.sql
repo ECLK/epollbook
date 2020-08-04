@@ -25,21 +25,8 @@ CREATE TABLE PollingDivisions (
 );
 
 INSERT INTO PollingDivisions VALUES
-    (1, 'A', 'COLOMBO-NORTH', '', ''),
-    (1, 'B', 'COLOMBO-CENTRAL', '', ''),
-    (1, 'C', 'BORELLA', '', ''),
-    (1, 'D', 'COLOMBO-EAST', '', ''),
     (1, 'E', 'COLOMBO-WEST', 'බටහිර කොළඹ', 'கொழும்பு மேற்க'),
-    (1, 'F', 'DEHIWALA', '', ''),
-    (1, 'G', 'RATMALANA', '', ''),
-    (1, 'H', 'KOLONNAWA', '', ''),
-    (1, 'I', 'KOTTE', '', ''),
-    (1, 'J', 'KADUWELA', 'කඩුවෙල', 'கடுவெல'),
-    (1, 'K', 'AVISSAWELLA', '', ''),
-    (1, 'L', 'HOMAGAMA', '', ''),
-    (1, 'M', 'MAHARAGAMA', '', ''),
-    (1, 'N', 'KESBEWA', '', ''),
-    (1, 'O', 'MORATUWA', '', '');
+    (1, 'J', 'KADUWELA', 'කඩුවෙල', 'கடுவெல');
 
 CREATE TABLE ElectorRegistry (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -70,6 +57,7 @@ CREATE TABLE VoteRecords (
     Age int DEFAULT -1,
     VotingStatus enum('NOT-VOTED','QUEUED','VOTED') DEFAULT 'NOT-VOTED',
     TimeStamp timestamp DEFAULT CURRENT_TIMESTAMP(),
-    PRIMARY KEY (ID),
-    CONSTRAINT ID FOREIGN KEY (ID) REFERENCES ElectorRegistry (ID)
+    PRIMARY KEY (DistrictID, PollingDivisionID, PollingStationID, ID)
+    -- PRIMARY KEY (ID),
+    -- CONSTRAINT ID FOREIGN KEY (ID) REFERENCES ElectorRegistry (ID)
 );
