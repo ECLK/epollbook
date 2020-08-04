@@ -66,13 +66,13 @@ function getVoterAge(string elector) returns @tainted int {
     }
 
     int current_year = 20;
-    int length_old_NIC = 9;
+    int length_old_NIC = 10;
     int length_new_NIC = 12;
     int yearOfBirth;
     int|error daysFromJan1;
 
     if nic.length() != length_old_NIC && nic.length() != length_new_NIC {
-        log:printError(string`Error: invalic NIC length: ${nic}`);
+        log:printError(string`Error: invalid NIC length: ${nic}`);
         return -1;
     }
 
