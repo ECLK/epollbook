@@ -27,7 +27,7 @@ jdbc:Client dbClient = new ({
 # + return - list of matching electors
 function getElectors(string election, string districtSI, string divisionSI, string stationID) returns @tainted json[]|error {
     string SELECT_ELECTORS = 
-        "SELECT ID, ElectorID, NationalID, GNDivision_SI, Street_SI, HouseNo, Name_SI, Name_TA, Sex " +
+        "SELECT ID as ElectorID, ElectorID as ID, NationalID, GNDivision_SI, Street_SI, HouseNo, Name_SI, Name_TA, Sex " +
         "FROM ElectorRegistry " + 
         "WHERE DistrictID=? AND PollingDivisionID=? AND PollingStationID=?";
     table<record{}> ret = check dbClient->select(SELECT_ELECTORS, ElectorResponse, districtSI, divisionSI, stationID);
@@ -36,7 +36,7 @@ function getElectors(string election, string districtSI, string divisionSI, stri
 
 function setVoterStatus(string election, string districtID, string divisionID, string stationID, string voterID, string timestamp, string status) returns error? {
     string STATUSUPDATE = "REPLACE INTO VoteRecords(Election, DistrictID, PollingDivisionID, PollingStationID, ID, Age, VotingStatus, Timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    var res = dbClient->update(STATUSUPDATE, election, districtID, divisionID, stationID, voterID, <@untainted> getVoterAge(voterID), status, timestamp);
+    var res = dbClient->update(STATUSUPDATE, election, districtID, divisionID, stationID, voterID, <@untainted> getVoterAge(districtID, divisionID, stationID, voterID), status, timestamp);
     if !(res is jdbc:UpdateResult) {
         log:printError(string`Error recording ${status} status of voter ${voterID} at polling station '${districtID}/${divisionID}/${stationID}'`);
         return res;
@@ -52,9 +52,9 @@ function getInStatus(string election, string districtID, string divisionID, stri
 # Look up the elector in the DB and calculate their age as of the current date (in years only) from their NIC.
 # + elector - ID of the elector in the DB
 # + return - age of the elector in years with -1 being returned if unable to get it for whatever reason
-function getVoterAge(string elector) returns @tainted int {
-    string ELECTOR_QUERY = "SELECT NationalID from ElectorRegistry where ID = ?";
-    table<record{}>|error ret = dbClient->select(ELECTOR_QUERY, record { string nationalID; }, elector);
+function getVoterAge(string district, string division, string station, string elector) returns @tainted int {
+    string ELECTOR_QUERY = "SELECT NationalID from ElectorRegistry where DistrictID = ? and PollingDivisionID = ? and PollingStationID = ? and ElectorID = ?";
+    table<record{}>|error ret = dbClient->select(ELECTOR_QUERY, record { string nationalID; }, district, division, station, elector);
     string nic = "";
     if ret is error {
         log:printError(string`Error while retrieving nationalID of elector ${elector}: ${ret.reason()}`);

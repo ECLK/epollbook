@@ -7,8 +7,8 @@ type InfoResponse record  {
 };
 
 type ElectorResponse record {
-    int ID;
     string ElectorID;
+    int ID;
     string NationalID;
     string GNDivision_SI;
     string Street_SI;
