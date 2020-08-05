@@ -64,7 +64,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1596603811053,
+  "iteration": 1596607071382,
   "links": [],
   "panels": [
     {
@@ -881,7 +881,7 @@
           ]
         },
         {
-          "format": "table",
+          "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
@@ -1117,5 +1117,5 @@
   "timezone": "",
   "title": "Polling Station Dashboard - E Poll Book",
   "uid": "y_Ua1V9Wz",
-  "version": 58
+  "version": 59
 }
