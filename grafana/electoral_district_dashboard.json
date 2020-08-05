@@ -64,7 +64,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1596599871965,
+  "iteration": 1596605157171,
   "links": [],
   "panels": [
     {
@@ -1031,7 +1031,7 @@
     ]
   },
   "time": {
-    "from": "now/d",
+    "from": "now/d + 7h",
     "to": "now"
   },
   "timepicker": {
@@ -1051,5 +1051,5 @@
   "timezone": "",
   "title": "Electoral District Dashboard - E Poll Book",
   "uid": "-8CSgjVGz",
-  "version": 9
+  "version": 10
 }

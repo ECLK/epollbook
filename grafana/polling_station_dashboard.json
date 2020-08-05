@@ -64,7 +64,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1596603811047,
+  "iteration": 1596603811053,
   "links": [],
   "panels": [
     {
@@ -1097,7 +1097,7 @@
     ]
   },
   "time": {
-    "from": "now/d",
+    "from": "now/d + 7h",
     "to": "now"
   },
   "timepicker": {
@@ -1117,5 +1117,5 @@
   "timezone": "",
   "title": "Polling Station Dashboard - E Poll Book",
   "uid": "y_Ua1V9Wz",
-  "version": 57
+  "version": 58
 }
