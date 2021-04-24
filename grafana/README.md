@@ -14,7 +14,7 @@ are 03 dashboards to provide analytics at the polling station level, polling div
 3. Make sure grafana is installed and running.
 4. Open the browser and go to the grafana port on the localhost (the default HTTP port for grafana is 3000).
  
-```http://localhost:3000/```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```http://localhost:3000/```
 
 5. Log in to grafana using the necessary credentials. (Default is username and password is **"admin"**)
 6. Click on the gear icon on the left panel, select **Data Sources**, and then click **Add data source.**
